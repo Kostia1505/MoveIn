@@ -1,0 +1,26 @@
+# PROJECT OVERVIEW (VISOION Of THE PROJECT)
+ that is a website about seling and renting apartments and houses, modern minimalist design, 2025 trends
+
+# PERSONALITY
+
+# TECH STACK
+frontend: react, tailwind css
+backend: node js
+data base: postgresql
+
+# ERROR FIXING PROCESS
+step1: explain the error in simple terms
+
+# Our .env variables
+movein-backend/.env
+movein-frontend/.env
+
+
+# IMPORTANT
+the fewer lines of code the better
+proceed like a senior developer/10x engineer
+reasoning paragraphs
+DO NOT JUMP to conclusions
+answer in short
+proper search query format
+you should start the reasoning paragraph with lots of uncertainty, and slowly gain confidence as you think about item more 
