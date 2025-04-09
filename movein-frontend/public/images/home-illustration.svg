@@ -1,0 +1,40 @@
+<svg width="500" height="400" viewBox="0 0 500 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Simple House Illustration -->
+  <!-- Main Structure -->
+  <path d="M250 50L50 200V350H450V200L250 50Z" fill="#E6F0FF" stroke="#3B82F6" stroke-width="4"/>
+  
+  <!-- Roof -->
+  <path d="M250 50L50 200H450L250 50Z" fill="#BBDEFB" stroke="#3B82F6" stroke-width="4"/>
+  
+  <!-- Door -->
+  <path d="M225 275V350H275V275H225Z" fill="#FFFFFF" stroke="#3B82F6" stroke-width="4"/>
+  <circle cx="265" cy="315" r="5" fill="#2563EB"/>
+  
+  <!-- Windows -->
+  <rect x="125" y="225" width="50" height="50" rx="2" fill="#FFFFFF" stroke="#3B82F6" stroke-width="3"/>
+  <rect x="325" y="225" width="50" height="50" rx="2" fill="#FFFFFF" stroke="#3B82F6" stroke-width="3"/>
+  
+  <!-- Window Details -->
+  <line x1="150" y1="225" x2="150" y2="275" stroke="#3B82F6" stroke-width="2"/>
+  <line x1="125" y1="250" x2="175" y2="250" stroke="#3B82F6" stroke-width="2"/>
+  <line x1="350" y1="225" x2="350" y2="275" stroke="#3B82F6" stroke-width="2"/>
+  <line x1="325" y1="250" x2="375" y2="250" stroke="#3B82F6" stroke-width="2"/>
+  
+  <!-- Chimney -->
+  <path d="M350 100V50H380V130L350 100Z" fill="#BBDEFB" stroke="#3B82F6" stroke-width="3"/>
+  
+  <!-- Walkway -->
+  <path d="M225 350H275V375H225V350Z" fill="#E5E7EB" stroke="#3B82F6" stroke-width="2"/>
+  
+  <!-- Decorative Elements -->
+  <circle cx="250" cy="190" r="15" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2"/>
+  <path d="M235 175L265 205M235 205L265 175" stroke="#3B82F6" stroke-width="2"/>
+  
+  <!-- Grass -->
+  <path d="M0 350H500V380H0V350Z" fill="#DCFCE7"/>
+  <path d="M20 360C30 350 40 355 50 360C60 365 70 350 80 360" stroke="#059669" stroke-width="2"/>
+  <path d="M120 360C130 350 140 355 150 360C160 365 170 350 180 360" stroke="#059669" stroke-width="2"/>
+  <path d="M220 360C230 350 240 355 250 360C260 365 270 350 280 360" stroke="#059669" stroke-width="2"/>
+  <path d="M320 360C330 350 340 355 350 360C360 365 370 350 380 360" stroke="#059669" stroke-width="2"/>
+  <path d="M420 360C430 350 440 355 450 360C460 365 470 350 480 360" stroke="#059669" stroke-width="2"/>
+</svg> 

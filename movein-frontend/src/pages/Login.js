@@ -1,279 +1,164 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
+import Navbar from '../components/Navbar';
 
 const Login = () => {
-  const [credentials, setCredentials] = useState({ email: '', password: '' });
-  const [errors, setErrors] = useState({});
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
+  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { t } = useLanguage();
+  const { isDarkMode, toggleTheme } = useTheme();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setCredentials({
-      ...credentials,
+    setFormData(prev => ({
+      ...prev,
       [name]: value
-    });
-    // Clear errors when field is modified
-    if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: ''
-      });
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    
-    // Email validation
-    if (!credentials.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(credentials.email)) {
-      newErrors.email = 'Email address is invalid';
-    }
-    
-    // Password validation
-    if (!credentials.password) {
-      newErrors.password = 'Password is required';
-    } else if (credentials.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) return;
-    
+    setError('');
+
+    if (!formData.email || !formData.password) {
+      setError(t.allFieldsRequired || 'All fields are required');
+      return;
+    }
+
     setIsLoading(true);
-    
     try {
-      // Mock login - in a real app, you would make an API call here
+      // TODO: Implement actual login logic here
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock successful login
-      localStorage.setItem('authToken', 'mock-token');
-      localStorage.setItem('user', JSON.stringify({ 
-        id: '123', 
-        name: 'Test User',
-        email: credentials.email 
-      }));
-      
-      // Redirect to homepage
-      navigate('/');
-      
-    } catch (error) {
-      setErrors({ 
-        form: 'Login failed. Please check your credentials and try again.' 
-      });
+      navigate('/dashboard');
+    } catch (err) {
+      setError(t.failedToLogin || 'Failed to login');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      minHeight: '100vh', 
-      backgroundColor: '#F9FAFB' 
-    }}>
-      <div style={{ 
-        width: '100%', 
-        maxWidth: '28rem', 
-        margin: '0 auto', 
-        padding: '2rem 1rem',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center'
-      }}>
-        <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
-          <h1 style={{ 
-            fontSize: '1.875rem', 
-            fontWeight: 700, 
-            color: '#111827',
-            marginBottom: '1rem' 
-          }}>
-            Welcome back
-          </h1>
-          <p style={{ color: '#6B7280' }}>
-            Sign in to your account to continue
-          </p>
-        </div>
-
-        <div style={{ 
-          backgroundColor: 'white', 
-          borderRadius: '0.5rem', 
-          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-          padding: '1.5rem' 
-        }}>
-          {errors.form && (
-            <div style={{ 
-              marginBottom: '1rem', 
-              padding: '0.75rem', 
-              backgroundColor: '#FEE2E2', 
-              borderRadius: '0.375rem', 
-              color: '#B91C1C' 
-            }}>
-              {errors.form}
+    <div className={`min-h-screen bg-theme-primary text-theme-primary transition-colors duration-200`}>
+      <Navbar />
+      
+      <div className="flex flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className={`w-full max-w-md space-y-8 p-8 rounded-xl shadow-lg border border-theme ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}
+        >
+          <div>
+            <div className="flex justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-12 h-12 text-blue-primary">
+                <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" />
+                <path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" />
+              </svg>
             </div>
-          )}
-
-          <form onSubmit={handleSubmit}>
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label 
-                htmlFor="email" 
-                style={{ 
-                  display: 'block', 
-                  marginBottom: '0.5rem', 
-                  fontSize: '0.875rem', 
-                  fontWeight: 500, 
-                  color: '#374151' 
-                }}
-              >
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                value={credentials.email}
-                onChange={handleChange}
-                style={{ 
-                  width: '100%', 
-                  padding: '0.5rem 0.75rem', 
-                  borderRadius: '0.375rem', 
-                  border: errors.email ? '1px solid #F87171' : '1px solid #D1D5DB', 
-                  fontSize: '1rem',
-                  backgroundColor: '#F9FAFB',
-                  outline: 'none'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#93C5FD'}
-                onBlur={(e) => e.target.style.borderColor = errors.email ? '#F87171' : '#D1D5DB'}
-              />
-              {errors.email && (
-                <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: '#EF4444' }}>
-                  {errors.email}
-                </p>
-              )}
-            </div>
-
-            <div style={{ marginBottom: '1.5rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <label 
-                  htmlFor="password" 
-                  style={{ 
-                    display: 'block', 
-                    fontSize: '0.875rem', 
-                    fontWeight: 500, 
-                    color: '#374151' 
-                  }}
-                >
-                  Password
-                </label>
-                <Link 
-                  to="/forgot-password" 
-                  style={{ 
-                    fontSize: '0.875rem', 
-                    color: '#4F46E5',
-                    textDecoration: 'none'
-                  }}
-                  onMouseOver={(e) => e.target.style.textDecoration = 'underline'}
-                  onMouseOut={(e) => e.target.style.textDecoration = 'none'}
-                >
-                  Forgot password?
-                </Link>
-              </div>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                value={credentials.password}
-                onChange={handleChange}
-                style={{ 
-                  width: '100%', 
-                  padding: '0.5rem 0.75rem', 
-                  borderRadius: '0.375rem', 
-                  border: errors.password ? '1px solid #F87171' : '1px solid #D1D5DB', 
-                  fontSize: '1rem',
-                  backgroundColor: '#F9FAFB',
-                  outline: 'none'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#93C5FD'}
-                onBlur={(e) => e.target.style.borderColor = errors.password ? '#F87171' : '#D1D5DB'}
-              />
-              {errors.password && (
-                <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: '#EF4444' }}>
-                  {errors.password}
-                </p>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              style={{ 
-                width: '100%', 
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: '0.625rem 1.25rem', 
-                fontWeight: 500, 
-                color: 'white', 
-                backgroundColor: isLoading ? '#818CF8' : '#4F46E5', 
-                borderRadius: '0.375rem', 
-                border: 'none',
-                cursor: isLoading ? 'not-allowed' : 'pointer',
-                transition: 'background-color 0.2s'
-              }}
-              onMouseOver={(e) => {
-                if (!isLoading) e.target.style.backgroundColor = '#4338CA';
-              }}
-              onMouseOut={(e) => {
-                if (!isLoading) e.target.style.backgroundColor = '#4F46E5';
-              }}
+            <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-theme-primary">
+              {t.signIn || "Sign in to your account"}
+            </h2>
+            <p className="mt-2 text-center text-sm text-theme-secondary">
+              {t.welcomeBack || "Welcome back"}
+            </p>
+          </div>
+          
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-md p-4 text-sm bg-red-500/10 text-red-600"
             >
-              {isLoading ? (
-                <span style={{ 
-                  display: 'inline-block', 
-                  width: '1rem', 
-                  height: '1rem', 
-                  borderRadius: '50%', 
-                  border: '2px solid rgba(255, 255, 255, 0.3)', 
-                  borderTopColor: 'white', 
-                  animation: 'spin 1s linear infinite',
-                  marginRight: '0.5rem'
-                }} />
-              ) : null}
-              {isLoading ? 'Signing in...' : 'Sign in'}
-            </button>
+              {error}
+            </motion.div>
+          )}
+          
+          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+            <div className="space-y-6">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-theme-secondary">
+                  {t.email || "Email"}
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={`block w-full appearance-none rounded-lg border border-theme px-4 py-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 theme-input ${
+                      isDarkMode ? 'bg-gray-900 text-white placeholder-gray-500' : 'bg-white text-gray-900 placeholder-gray-400'
+                    }`}
+                    placeholder="m@example.com"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <div className="flex items-center justify-between">
+                  <label htmlFor="password" className="block text-sm font-medium text-theme-secondary">
+                    {t.password || "Password"}
+                  </label>
+                  <div className="text-sm">
+                    <Link to="/forgot-password" className="font-medium text-blue-primary hover:text-blue-hover">
+                      {t.forgotPassword || "Forgot password?"}
+                    </Link>
+                  </div>
+                </div>
+                <div className="mt-1">
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    required
+                    value={formData.password}
+                    onChange={handleChange}
+                    className={`block w-full appearance-none rounded-lg border border-theme px-4 py-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 theme-input ${
+                      isDarkMode ? 'bg-gray-900 text-white placeholder-gray-500' : 'bg-white text-gray-900 placeholder-gray-400'
+                    }`}
+                    placeholder="••••••••"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="flex w-full justify-center rounded-lg px-4 py-3 text-sm font-semibold bg-blue-primary hover:bg-blue-hover text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-primary disabled:opacity-50"
+              >
+                {isLoading ? (
+                  <span className="flex items-center">
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    {t.signingIn || "Signing in..."}
+                  </span>
+                ) : (
+                  t.signIn || "Sign in"
+                )}
+              </button>
+            </div>
+            
+            <p className="mt-4 text-center text-sm text-theme-secondary">
+              {t.noAccount || "Not a member?"}{' '}
+              <Link to="/signup" className="font-medium text-blue-primary hover:text-blue-hover">
+                {t.signUp || "Sign up"}
+              </Link>
+            </p>
           </form>
-        </div>
-
-        <div style={{ 
-          marginTop: '1.5rem', 
-          textAlign: 'center',
-          fontSize: '0.875rem',
-          color: '#6B7280'
-        }}>
-          Don't have an account?{' '}
-          <Link 
-            to="/register" 
-            style={{ 
-              color: '#4F46E5', 
-              fontWeight: 500,
-              textDecoration: 'none'
-            }}
-            onMouseOver={(e) => e.target.style.textDecoration = 'underline'}
-            onMouseOut={(e) => e.target.style.textDecoration = 'none'}
-          >
-            Create an account
-          </Link>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

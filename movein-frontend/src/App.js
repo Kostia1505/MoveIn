@@ -4,17 +4,25 @@ import ScrollToTop from './components/ScrollToTop';
 
 // Page imports
 import Home from './pages/Home';
-import Listings from './pages/Listings';
+import Buy from './pages/Buy';
+import Rent from './pages/Rent';
+import Sell from './pages/Sell';
+import Properties from './pages/Properties';
 import NotFound from './pages/NotFound';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 function App() {
   return (
     <>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/buy" element={<Listings />} />
-        <Route path="/rent" element={<Listings />} />
-        <Route path="/properties" element={<Listings />} />
+        <Route path="/buy" element={<Buy />} />
+        <Route path="/rent" element={<Rent />} />
+        <Route path="/sell" element={<Sell />} />
+        <Route path="/properties" element={<Properties />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <ScrollToTop />
