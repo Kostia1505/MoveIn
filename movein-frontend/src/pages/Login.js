@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
 import Navbar from '../components/Navbar';
 
 const Login = () => {
@@ -13,8 +14,18 @@ const Login = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { t } = useLanguage();
-  const { isDarkMode, toggleTheme } = useTheme();
+  const location = useLocation();
+  const { t, language } = useLanguage();
+  const { isDarkMode } = useTheme();
+  const { login, currentUser } = useAuth();
+  
+  // If user is already logged in, redirect to dashboard or the page they were trying to access
+  useEffect(() => {
+    if (currentUser) {
+      const from = location.state?.from?.pathname || '/dashboard';
+      navigate(from);
+    }
+  }, [currentUser, navigate, location]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,17 +40,16 @@ const Login = () => {
     setError('');
 
     if (!formData.email || !formData.password) {
-      setError(t.allFieldsRequired || 'All fields are required');
+      setError(language === 'UA' ? 'Всі поля обов\'язкові' : 'All fields are required');
       return;
     }
 
     setIsLoading(true);
     try {
-      // TODO: Implement actual login logic here
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      navigate('/dashboard');
+      await login(formData.email, formData.password);
+      // Navigation happens in useEffect
     } catch (err) {
-      setError(t.failedToLogin || 'Failed to login');
+      setError(err.message || (language === 'UA' ? 'Помилка входу' : 'Failed to login'));
     } finally {
       setIsLoading(false);
     }
@@ -64,10 +74,10 @@ const Login = () => {
               </svg>
             </div>
             <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-theme-primary">
-              {t.signIn || "Sign in to your account"}
+              {language === 'UA' ? "Увійти в акаунт" : "Sign in to your account"}
             </h2>
             <p className="mt-2 text-center text-sm text-theme-secondary">
-              {t.welcomeBack || "Welcome back"}
+              {language === 'UA' ? "Ласкаво просимо" : "Welcome back"}
             </p>
           </div>
           
@@ -85,7 +95,7 @@ const Login = () => {
             <div className="space-y-6">
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-theme-secondary">
-                  {t.email || "Email"}
+                  {language === 'UA' ? "Електронна пошта" : "Email"}
                 </label>
                 <div className="mt-1">
                   <input
@@ -98,7 +108,7 @@ const Login = () => {
                     className={`block w-full appearance-none rounded-lg border border-theme px-4 py-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 theme-input ${
                       isDarkMode ? 'bg-gray-900 text-white placeholder-gray-500' : 'bg-white text-gray-900 placeholder-gray-400'
                     }`}
-                    placeholder="m@example.com"
+                    placeholder={language === 'UA' ? "вкажіть електронну пошту" : "m@example.com"}
                   />
                 </div>
               </div>
@@ -106,11 +116,11 @@ const Login = () => {
               <div>
                 <div className="flex items-center justify-between">
                   <label htmlFor="password" className="block text-sm font-medium text-theme-secondary">
-                    {t.password || "Password"}
+                    {language === 'UA' ? "Пароль" : "Password"}
                   </label>
                   <div className="text-sm">
                     <Link to="/forgot-password" className="font-medium text-blue-primary hover:text-blue-hover">
-                      {t.forgotPassword || "Forgot password?"}
+                      {language === 'UA' ? "Забули пароль?" : "Forgot password?"}
                     </Link>
                   </div>
                 </div>
@@ -135,7 +145,7 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex w-full justify-center rounded-lg px-4 py-3 text-sm font-semibold bg-blue-primary hover:bg-blue-hover text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-primary disabled:opacity-50"
+                className="flex w-full justify-center rounded-lg px-4 py-3 text-sm font-semibold bg-blue-primary hover:bg-blue-hover text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-primary disabled:opacity-50 transition-colors"
               >
                 {isLoading ? (
                   <span className="flex items-center">
@@ -143,18 +153,18 @@ const Login = () => {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    {t.signingIn || "Signing in..."}
+                    {language === 'UA' ? "Вхід..." : "Signing in..."}
                   </span>
                 ) : (
-                  t.signIn || "Sign in"
+                  language === 'UA' ? "Увійти" : "Sign in"
                 )}
               </button>
             </div>
             
             <p className="mt-4 text-center text-sm text-theme-secondary">
-              {t.noAccount || "Not a member?"}{' '}
+              {language === 'UA' ? "Не маєте акаунту?" : "Not a member?"}{' '}
               <Link to="/signup" className="font-medium text-blue-primary hover:text-blue-hover">
-                {t.signUp || "Sign up"}
+                {language === 'UA' ? "Зареєструватися" : "Sign up"}
               </Link>
             </p>
           </form>

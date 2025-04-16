@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isLangHovered, setIsLangHovered] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const location = useLocation();
   const { isDarkMode, toggleTheme } = useTheme();
   const { t, language, setLanguage } = useLanguage();
+  const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
   
   const isActive = (path) => location.pathname === path;
   
@@ -27,6 +31,16 @@ const Navbar = () => {
   const handleLanguageChange = (lang) => {
     setLanguage(lang);
     setIsLangHovered(false);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+      setIsUserMenuOpen(false);
+    } catch (error) {
+      console.error('Failed to log out', error);
+    }
   };
 
   return (
@@ -218,21 +232,93 @@ const Navbar = () => {
             </AnimatePresence>
           </motion.div>
           
-          {/* Auth Buttons */}
-          <div className="hidden md:flex items-center space-x-2">
-            <Link
-              to="/login"
-              className="px-4 py-2 text-sm font-medium rounded-lg transition-colors text-theme-primary hover:bg-theme-secondary"
+          {/* Auth Buttons or User Menu */}
+          {currentUser ? (
+            <motion.div
+              className="relative"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
             >
-              {language === 'UA' ? "Увійти" : "Login"}
-            </Link>
-            <Link
-              to="/signup"
-              className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-primary hover:bg-blue-hover text-white transition-colors"
-            >
-              {language === 'UA' ? "Реєстрація" : "Sign Up"}
-            </Link>
-          </div>
+              <motion.button
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                className={`flex items-center space-x-2 p-2 rounded-lg text-sm font-medium transition-colors ${
+                  isDarkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100'
+                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center bg-blue-primary text-white`}>
+                  {currentUser.firstName.charAt(0)}{currentUser.lastName.charAt(0)}
+                </div>
+                <span className="hidden md:block text-theme-primary">{currentUser.firstName}</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-4 w-4 text-theme-secondary transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </motion.button>
+
+              <AnimatePresence>
+                {isUserMenuOpen && (
+                  <motion.div
+                    className={`absolute right-0 mt-2 py-2 w-48 rounded-lg shadow-lg z-10 ${
+                      isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
+                    }`}
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Link
+                      to="/dashboard"
+                      className={`block px-4 py-2 text-sm ${
+                        isDarkMode ? 'hover:bg-gray-700 text-theme-primary' : 'hover:bg-gray-100 text-theme-primary'
+                      }`}
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      {language === 'UA' ? 'Мій кабінет' : 'Dashboard'}
+                    </Link>
+                    <Link
+                      to="/settings"
+                      className={`block px-4 py-2 text-sm ${
+                        isDarkMode ? 'hover:bg-gray-700 text-theme-primary' : 'hover:bg-gray-100 text-theme-primary'
+                      }`}
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      {language === 'UA' ? 'Налаштування' : 'Settings'}
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className={`block w-full text-left px-4 py-2 text-sm ${
+                        isDarkMode ? 'hover:bg-gray-700 text-theme-primary' : 'hover:bg-gray-100 text-theme-primary'
+                      }`}
+                    >
+                      {language === 'UA' ? 'Вийти' : 'Logout'}
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          ) : (
+            <div className="hidden md:flex items-center space-x-2">
+              <Link
+                to="/login"
+                className="px-4 py-2 text-sm font-medium rounded-lg transition-colors text-theme-primary hover:bg-theme-secondary"
+              >
+                {language === 'UA' ? "Увійти" : "Login"}
+              </Link>
+              <Link
+                to="/signup"
+                className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-primary hover:bg-blue-hover text-white transition-colors"
+              >
+                {language === 'UA' ? "Реєстрація" : "Sign Up"}
+              </Link>
+            </div>
+          )}
           
           {/* Mobile menu button */}
           <motion.div 

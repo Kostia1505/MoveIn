@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
 import Navbar from '../components/Navbar';
 
 const Signup = () => {
@@ -16,8 +17,18 @@ const Signup = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const location = useLocation();
+  const { t, language } = useLanguage();
   const { isDarkMode, toggleTheme } = useTheme();
+  const { signup, currentUser } = useAuth();
+  
+  // If user is already logged in, redirect to dashboard or the page they were trying to access
+  useEffect(() => {
+    if (currentUser) {
+      const from = location.state?.from?.pathname || '/dashboard';
+      navigate(from);
+    }
+  }, [currentUser, navigate, location]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,17 +43,16 @@ const Signup = () => {
     setError('');
 
     if (formData.password !== formData.confirmPassword) {
-      setError(t.passwordsDoNotMatch || 'Passwords do not match');
+      setError(language === 'UA' ? 'Паролі не співпадають' : 'Passwords do not match');
       return;
     }
     
     setIsLoading(true);
     try {
-      // TODO: Implement actual signup logic here
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      navigate('/dashboard');
+      await signup(formData);
+      // Navigation happens in useEffect
     } catch (err) {
-      setError(t.failedToSignup || 'Failed to create account');
+      setError(err.message || (language === 'UA' ? 'Помилка реєстрації' : 'Failed to create account'));
     } finally {
       setIsLoading(false);
     }
@@ -67,10 +77,10 @@ const Signup = () => {
               </svg>
             </div>
             <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-theme-primary">
-              {t.createAccount || "Create your account"}
+              {language === 'UA' ? "Створити акаунт" : "Create your account"}
             </h2>
             <p className="mt-2 text-center text-sm text-theme-secondary">
-              {t.joinCommunity || "Join our community today"}
+              {language === 'UA' ? "Приєднуйтесь до нашої спільноти" : "Join our community today"}
             </p>
           </div>
           
@@ -89,7 +99,7 @@ const Signup = () => {
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div>
                   <label htmlFor="firstName" className="block text-sm font-medium text-theme-secondary">
-                    {t.firstName || "First name"}
+                    {language === 'UA' ? "Ім'я" : "First name"}
                   </label>
                   <div className="mt-1">
                     <input
@@ -108,7 +118,7 @@ const Signup = () => {
                 
                 <div>
                   <label htmlFor="lastName" className="block text-sm font-medium text-theme-secondary">
-                    {t.lastName || "Last name"}
+                    {language === 'UA' ? "Прізвище" : "Last name"}
                   </label>
                   <div className="mt-1">
                     <input
@@ -128,7 +138,7 @@ const Signup = () => {
               
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-theme-secondary">
-                  {t.email || "Email"}
+                  {language === 'UA' ? "Електронна пошта" : "Email"}
                 </label>
                 <div className="mt-1">
                   <input
@@ -141,14 +151,14 @@ const Signup = () => {
                     className={`block w-full appearance-none rounded-lg border border-theme px-4 py-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 theme-input ${
                       isDarkMode ? 'bg-gray-900 text-white placeholder-gray-500' : 'bg-white text-gray-900 placeholder-gray-400'
                     }`}
-                    placeholder="m@example.com"
+                    placeholder={language === 'UA' ? "вкажіть електронну пошту" : "m@example.com"}
                   />
                 </div>
               </div>
               
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-theme-secondary">
-                  {t.password || "Password"}
+                  {language === 'UA' ? "Пароль" : "Password"}
                 </label>
                 <div className="mt-1">
                   <input
@@ -168,7 +178,7 @@ const Signup = () => {
               
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-theme-secondary">
-                  {t.confirmPassword || "Confirm password"}
+                  {language === 'UA' ? "Підтвердити пароль" : "Confirm password"}
                 </label>
                 <div className="mt-1">
                   <input
@@ -191,7 +201,7 @@ const Signup = () => {
               <motion.button
                 type="submit"
                 disabled={isLoading}
-                className="flex w-full justify-center rounded-lg px-4 py-3 text-sm font-semibold bg-blue-primary hover:bg-blue-hover text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-primary disabled:opacity-50"
+                className="flex w-full justify-center rounded-lg px-4 py-3 text-sm font-semibold bg-blue-primary hover:bg-blue-hover text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-primary disabled:opacity-50 transition-colors"
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
               >
@@ -201,18 +211,18 @@ const Signup = () => {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    {t.creatingAccount || "Creating account..."}
+                    {language === 'UA' ? "Створення акаунту..." : "Creating account..."}
                   </span>
                 ) : (
-                  t.createAccount || "Create account"
+                  language === 'UA' ? "Створити акаунт" : "Create account"
                 )}
               </motion.button>
             </div>
             
             <p className="mt-4 text-center text-sm text-theme-secondary">
-              {t.alreadyHaveAccount || "Already have an account?"}{' '}
+              {language === 'UA' ? "Вже маєте акаунт?" : "Already have an account?"}{' '}
               <Link to="/login" className="font-medium text-blue-primary hover:text-blue-hover">
-                {t.login || "Sign in"}
+                {language === 'UA' ? "Увійти" : "Sign in"}
               </Link>
             </p>
           </form>
