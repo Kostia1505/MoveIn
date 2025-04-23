@@ -62,8 +62,49 @@ const Dashboard = () => {
               </div>
             </div>
             
-            {/* Favorite Properties */}
+            {/* Actions panel */}
             <div className={`col-span-2 p-4 rounded-lg border border-theme ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+              <h2 className="text-xl font-bold mb-4 text-theme-primary">Мої дії</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="p-4 border border-theme rounded-lg hover:shadow-md transition-all cursor-pointer"
+                  onClick={() => navigate('/create-ad')}
+                >
+                  <div className="flex items-center mb-2">
+                    <span className="w-10 h-10 flex items-center justify-center bg-blue-100 text-blue-primary rounded-full mr-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                    </span>
+                    <span className="font-medium text-lg text-theme-primary">Створити оголошення</span>
+                  </div>
+                  <p className="text-sm text-theme-secondary pl-13">Розмістіть вашу нерухомість для продажу або оренди</p>
+                </motion.div>
+                
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="p-4 border border-theme rounded-lg hover:shadow-md transition-all cursor-pointer"
+                  onClick={() => navigate('/properties')}
+                >
+                  <div className="flex items-center mb-2">
+                    <span className="w-10 h-10 flex items-center justify-center bg-green-100 text-green-600 rounded-full mr-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </span>
+                    <span className="font-medium text-lg text-theme-primary">Пошук нерухомості</span>
+                  </div>
+                  <p className="text-sm text-theme-secondary">Знайдіть нерухомість для покупки або оренди</p>
+                </motion.div>
+              </div>
+            </div>
+            
+            {/* Favorite Properties */}
+            <div className={`col-span-1 lg:col-span-3 p-4 rounded-lg border border-theme ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
               <h2 className="text-xl font-bold mb-4 text-theme-primary">Збережені об'єкти</h2>
               
               <div className="space-y-4">

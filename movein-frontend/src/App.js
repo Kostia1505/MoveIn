@@ -13,6 +13,7 @@ import NotFound from './pages/NotFound';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
+import CreateAd from './pages/CreateAd';
 
 function App() {
   return (
@@ -33,6 +34,14 @@ function App() {
           element={
             <PrivateRoute>
               <Dashboard />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path="/create-ad" 
+          element={
+            <PrivateRoute>
+              <CreateAd />
             </PrivateRoute>
           } 
         />

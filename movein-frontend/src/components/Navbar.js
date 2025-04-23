@@ -20,7 +20,7 @@ const Navbar = () => {
   
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   
-  const navLinks = [
+  const navLinks = [  
     { name: language === 'UA' ? 'Головна' : 'Home', path: '/' },
     { name: language === 'UA' ? 'Купити' : 'Buy', path: '/buy' },
     { name: language === 'UA' ? 'Орендувати' : 'Rent', path: '/rent' },
@@ -73,35 +73,29 @@ const Navbar = () => {
         </motion.div>
 
         {/* Desktop Navigation */}
-        <motion.div className="hidden md:flex items-center">
+        <motion.div className="hidden md:flex items-center space-x-1">
           {navLinks.map((link, index) => (
             <motion.div
               key={link.path}
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 * (index + 1) }}
-              className="relative"
             >
               <Link
                 to={link.path}
-                className={`px-3 py-2 mx-2 text-sm font-medium transition-colors ${
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
                   isActive(link.path) 
-                    ? 'text-blue-primary' 
+                    ? `${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} text-blue-primary` 
                     : 'text-theme-secondary hover:text-theme-primary'
                 }`}
               >
                 <motion.span
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  className="inline-block"
                 >
                   {link.name}
                 </motion.span>
-                {isActive(link.path) && (
-                  <motion.div
-                    className="absolute bottom-0 left-3 right-3 h-0.5 bg-blue-primary"
-                    layoutId="navbar-indicator"
-                  />
-                )}
               </Link>
             </motion.div>
           ))}
@@ -114,10 +108,10 @@ const Navbar = () => {
             onClick={toggleTheme}
             className={`flex items-center justify-center p-2 rounded-full mr-2 transition-colors ${
               isDarkMode 
-                ? 'bg-gray-800 text-blue-primary' 
-                : 'bg-gray-100 text-blue-primary'
+                ? 'bg-gray-800 text-blue-primary hover:bg-gray-700' 
+                : 'bg-gray-100 text-blue-primary hover:bg-gray-200'
             }`}
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
             aria-label={isDarkMode ? t.lightMode || "Light mode" : t.darkMode || "Dark mode"}
             title={isDarkMode ? t.lightMode || "Light mode" : t.darkMode || "Dark mode"}
@@ -174,8 +168,11 @@ const Navbar = () => {
             onHoverEnd={() => setIsLangHovered(false)}
           >
             <motion.button
-              className="flex items-center p-2 rounded-lg text-sm font-medium transition-colors text-theme-secondary hover:text-theme-primary"
-              whileHover={{ scale: 1.05 }}
+              className={`flex items-center p-2 rounded-lg text-sm font-medium transition-colors 
+                ${isDarkMode 
+                  ? 'bg-gray-800 text-theme-secondary hover:bg-gray-700 hover:text-theme-primary' 
+                  : 'bg-gray-100 text-theme-secondary hover:bg-gray-200 hover:text-theme-primary'}`}
+              whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.95 }}
             >
               {language}
@@ -209,7 +206,7 @@ const Navbar = () => {
                 >
                   <button
                     onClick={() => handleLanguageChange('EN')}
-                    className={`block w-full text-left px-4 py-2 text-sm transition-colors ${
+                    className={`block w-full text-left px-4 py-2 text-sm transition-colors rounded-md mx-1 my-1 ${
                       language === 'EN' 
                         ? 'bg-blue-primary/10 text-theme-primary' 
                         : 'text-theme-secondary hover:text-theme-primary hover:bg-blue-primary/5'
@@ -219,7 +216,7 @@ const Navbar = () => {
                   </button>
                   <button
                     onClick={() => handleLanguageChange('UA')}
-                    className={`block w-full text-left px-4 py-2 text-sm transition-colors ${
+                    className={`block w-full text-left px-4 py-2 text-sm transition-colors rounded-md mx-1 my-1 ${
                       language === 'UA' 
                         ? 'bg-blue-primary/10 text-theme-primary' 
                         : 'text-theme-secondary hover:text-theme-primary hover:bg-blue-primary/5'
@@ -242,9 +239,11 @@ const Navbar = () => {
               <motion.button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 className={`flex items-center space-x-2 p-2 rounded-lg text-sm font-medium transition-colors ${
-                  isDarkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100'
+                  isDarkMode 
+                    ? 'bg-gray-800 hover:bg-gray-700 text-theme-primary' 
+                    : 'bg-gray-100 hover:bg-gray-200 text-theme-primary'
                 }`}
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center bg-blue-primary text-white`}>
@@ -275,7 +274,7 @@ const Navbar = () => {
                   >
                     <Link
                       to="/dashboard"
-                      className={`block px-4 py-2 text-sm ${
+                      className={`block px-4 py-2 text-sm rounded-md mx-1 my-1 ${
                         isDarkMode ? 'hover:bg-gray-700 text-theme-primary' : 'hover:bg-gray-100 text-theme-primary'
                       }`}
                       onClick={() => setIsUserMenuOpen(false)}
@@ -284,7 +283,7 @@ const Navbar = () => {
                     </Link>
                     <Link
                       to="/settings"
-                      className={`block px-4 py-2 text-sm ${
+                      className={`block px-4 py-2 text-sm rounded-md mx-1 my-1 ${
                         isDarkMode ? 'hover:bg-gray-700 text-theme-primary' : 'hover:bg-gray-100 text-theme-primary'
                       }`}
                       onClick={() => setIsUserMenuOpen(false)}
@@ -293,7 +292,7 @@ const Navbar = () => {
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className={`block w-full text-left px-4 py-2 text-sm ${
+                      className={`block w-full text-left px-4 py-2 text-sm rounded-md mx-1 my-1 ${
                         isDarkMode ? 'hover:bg-gray-700 text-theme-primary' : 'hover:bg-gray-100 text-theme-primary'
                       }`}
                     >
@@ -305,18 +304,32 @@ const Navbar = () => {
             </motion.div>
           ) : (
             <div className="hidden md:flex items-center space-x-2">
-              <Link
-                to="/login"
-                className="px-4 py-2 text-sm font-medium rounded-lg transition-colors text-theme-primary hover:bg-theme-secondary"
+              <motion.div
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.95 }}
               >
-                {language === 'UA' ? "Увійти" : "Login"}
-              </Link>
-              <Link
-                to="/signup"
-                className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-primary hover:bg-blue-hover text-white transition-colors"
+                <Link
+                  to="/login"
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    isDarkMode 
+                      ? 'bg-gray-800 text-theme-primary hover:bg-gray-700' 
+                      : 'bg-gray-100 text-theme-primary hover:bg-gray-200'
+                  }`}
+                >
+                  {language === 'UA' ? "Увійти" : "Login"}
+                </Link>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.95 }}
               >
-                {language === 'UA' ? "Реєстрація" : "Sign Up"}
-              </Link>
+                <Link
+                  to="/signup"
+                  className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-primary hover:bg-blue-hover text-white transition-colors shadow-sm"
+                >
+                  {language === 'UA' ? "Реєстрація" : "Sign Up"}
+                </Link>
+              </motion.div>
             </div>
           )}
           
@@ -331,8 +344,12 @@ const Navbar = () => {
           >
             <motion.button
               type="button"
-              className="p-2 rounded-md text-theme-secondary hover:text-theme-primary"
-              whileHover={{ scale: 1.05 }}
+              className={`p-2 rounded-lg text-theme-secondary ${
+                isDarkMode 
+                  ? 'bg-gray-800 hover:bg-gray-700 hover:text-theme-primary' 
+                  : 'bg-gray-100 hover:bg-gray-200 hover:text-theme-primary'
+              }`}
+              whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.95 }}
             >
               <span className="sr-only">{t.openMenu || "Open main menu"}</span>
@@ -361,13 +378,16 @@ const Navbar = () => {
                         x: 0,
                         transition: { delay: 0.05 * index } 
                       }}
+                      whileHover={{ x: 5 }}
                     >
                       <Link
                         to={link.path}
-                        className={`block px-4 py-2 text-sm transition-colors ${
+                        className={`block px-4 py-2 text-sm transition-colors rounded-md mx-1 my-1 ${
                           isActive(link.path) 
-                            ? 'text-blue-primary' 
-                            : 'text-theme-secondary hover:text-theme-primary hover:bg-blue-primary/5'
+                            ? `${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'} text-blue-primary` 
+                            : `text-theme-secondary hover:text-theme-primary ${
+                                isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                              }`
                         }`}
                       >
                         {link.name}
@@ -382,10 +402,13 @@ const Navbar = () => {
                       transition: { delay: 0.05 * navLinks.length } 
                     }}
                     className="mt-1 pt-1 border-t border-theme"
+                    whileHover={{ x: 5 }}
                   >
                     <Link
                       to="/login"
-                      className="block px-4 py-2 text-sm transition-colors text-theme-secondary hover:text-theme-primary hover:bg-blue-primary/5"
+                      className={`block px-4 py-2 text-sm transition-colors rounded-md mx-1 my-1 text-theme-secondary ${
+                        isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                      } hover:text-theme-primary`}
                     >
                       {language === 'UA' ? "Увійти" : "Login"}
                     </Link>
@@ -397,10 +420,11 @@ const Navbar = () => {
                       x: 0,
                       transition: { delay: 0.05 * (navLinks.length + 1) } 
                     }}
+                    whileHover={{ x: 5 }}
                   >
                     <Link 
                       to="/signup"
-                      className="block mx-4 mt-1 px-4 py-2 text-sm font-medium text-center text-white bg-blue-primary hover:bg-blue-hover rounded-lg transition-colors"
+                      className="block mx-4 mt-1 px-4 py-2 text-sm font-medium text-center text-white bg-blue-primary hover:bg-blue-hover rounded-lg transition-colors shadow-sm"
                     >
                       {language === 'UA' ? "Реєстрація" : "Sign Up"}
                     </Link>

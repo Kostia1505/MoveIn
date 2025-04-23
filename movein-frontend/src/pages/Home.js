@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { FloatingShapes, AnimatedGlassCard } from '../components/BackgroundElements';
 
 // Add featured property data
 const featuredProperties = [
@@ -171,6 +172,7 @@ const Home = () => {
   return (
     <div className="bg-theme-primary text-theme-primary transition-colors duration-200" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
+      <FloatingShapes />
       
       {/* Hero Section */}
       <section style={{ 
@@ -178,23 +180,46 @@ const Home = () => {
         backgroundImage: 'url(https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        height: '70vh', // Reduced height to make room for search
+        height: '75vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         color: 'white',
         textAlign: 'center'
       }}>
-        {/* Dark overlay */}
-        <div style={{ 
-          position: 'absolute', 
-          top: 0, 
-          left: 0, 
-          width: '100%', 
-          height: '100%', 
-          backgroundColor: 'rgba(0, 0, 0, 0.4)',
-          zIndex: 1
-        }}></div>
+        {/* Parallax effect for hero image */}
+        <motion.div 
+          className="absolute inset-0 z-0"
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+        >
+          <div 
+            style={{ 
+              position: 'absolute', 
+              top: 0, 
+              left: 0, 
+              width: '100%', 
+              height: '100%', 
+              backgroundImage: 'url(https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}
+          />
+        </motion.div>
+        
+        {/* Dark overlay with gradient */}
+        <div 
+          style={{ 
+            position: 'absolute', 
+            top: 0, 
+            left: 0, 
+            width: '100%', 
+            height: '100%', 
+            background: 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 100%)',
+            zIndex: 1
+          }}
+        />
         
         <motion.div 
           className="container" 
@@ -235,25 +260,31 @@ const Home = () => {
         </motion.div>
       </section>
       
-      {/* Advanced Search Box - positioned to overlap the hero section */}
+      {/* Advanced Search Box - now with glass effect */}
       <motion.div 
-        className="container mx-auto px-4 relative z-10"
-        style={{ marginTop: '-5rem' }}
+        className="container mx-auto px-4 relative z-10 py-6"
+        style={{ marginTop: '-60px' }}
         variants={searchBoxVariants}
         initial="hidden"
         animate="visible"
       >
-        <div className={`rounded-xl shadow-xl overflow-hidden ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+        <AnimatedGlassCard className="w-full">
           {/* Search Tabs */}
-          <div className="flex border-b border-theme">
+          <div className="flex border-b border-theme gap-2 p-2">
             {['buy', 'rent', 'sell'].map((filter) => (
               <motion.button
                 key={filter}
-                className={`flex-1 py-4 font-medium text-sm focus:outline-none transition-colors uppercase`}
-                variants={filterTabVariants}
-                animate={activeFilter === filter ? 'active' : 'inactive'}
-                whileHover={{ backgroundColor: activeFilter !== filter ? (isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)') : undefined }}
-                whileTap={{ scale: 0.98 }}
+                className={`flex-1 py-3 px-4 font-medium text-sm focus:outline-none transition-all uppercase rounded-lg`}
+                style={{
+                  color: activeFilter === filter ? '#ffffff' : (isDarkMode ? '#9ca3af' : '#4b5563'),
+                  backgroundColor: activeFilter === filter ? '#1e40af' : (isDarkMode ? 'rgba(31, 41, 55, 0.5)' : 'rgba(243, 244, 246, 0.5)')
+                }}
+                whileHover={{ 
+                  backgroundColor: activeFilter !== filter ? 
+                    (isDarkMode ? 'rgba(55, 65, 81, 0.7)' : 'rgba(229, 231, 235, 0.7)') : undefined,
+                  scale: 1.05
+                }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setActiveFilter(filter)}
               >
                 {language === 'UA' 
@@ -387,10 +418,16 @@ const Home = () => {
               
               {/* Advanced search toggle and search button */}
               <div className="flex justify-between items-center mt-4">
-                <button 
+                <motion.button 
                   type="button" 
                   onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
-                  className="text-sm text-blue-primary hover:text-blue-hover focus:outline-none transition-colors flex items-center"
+                  className={`text-sm focus:outline-none transition-all flex items-center px-4 py-2 rounded-lg ${
+                    isDarkMode 
+                      ? 'bg-gray-800 text-blue-primary hover:bg-gray-700' 
+                      : 'bg-gray-100 text-blue-primary hover:bg-gray-200'
+                  }`}
+                  whileHover={{ scale: 1.08 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   {language === 'UA' ? 'Розширений пошук' : 'Advanced Search'}
                   <svg 
@@ -402,20 +439,20 @@ const Home = () => {
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
-                </button>
+                </motion.button>
                 
                 <motion.button
                   type="submit"
-                  className="px-6 py-3 bg-blue-primary hover:bg-blue-hover text-white rounded-lg transition-colors flex items-center"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  className="px-6 py-3 bg-blue-primary hover:bg-blue-hover text-white rounded-lg transition-all flex items-center shadow-sm"
+                  whileHover={{ scale: 1.08 }}
+                  whileTap={{ scale: 0.95 }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+                  </svg>
                   {language === 'UA' ? 'Пошук' : 'Search'}
                 </motion.button>
               </div>
@@ -469,8 +506,8 @@ const Home = () => {
                             }`}
                           />
                         </div>
-            </div>
-            
+                      </div>
+                      
                       {/* Features checkboxes */}
                       <div>
                         <label className="block text-sm font-medium text-theme-secondary mb-2">
@@ -487,20 +524,20 @@ const Home = () => {
                           </label>
                         </div>
                       </div>
-              </div>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
           </form>
-        </div>
+        </AnimatedGlassCard>
       </motion.div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-8 mt-16">
         {/* Section title */}
         <motion.div 
-          className="text-center mb-10"
+          className="text-center mb-8 mt-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -517,23 +554,17 @@ const Home = () => {
         </motion.div>
       
       {/* Featured Properties Section */}
-        <section className="bg-theme-secondary" style={{ padding: '5rem 0' }}>
-        <div className="container">
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            marginBottom: '3rem' 
-          }}>
+        <section className="backdrop-blur-sm bg-theme-secondary/30 rounded-2xl mt-8 shadow-xl" style={{ padding: '3rem 0' }}>
+          <div className="container px-4">
+            <div className="flex justify-between items-center mb-6">
               <motion.h2 
-                className="text-theme-primary"
-                style={{ fontSize: '2.25rem', fontWeight: 'bold' }}
+                className="text-theme-primary text-2xl font-bold"
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.5 }}
               >
-              Featured Properties
+                Featured Properties
               </motion.h2>
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
@@ -542,17 +573,20 @@ const Home = () => {
                 transition={{ duration: 0.5 }}
               >
                 <motion.div
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.08 }}
                   whileTap={{ scale: 0.95 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/properties" className="px-4 py-2 rounded-lg border border-theme text-blue-primary hover:bg-blue-hover hover:text-white hover:border-blue-hover transition-colors">
-              View All Properties
-            </Link>
+                  <Link to="/properties" className={`px-4 py-2 rounded-lg transition-all ${
+                    isDarkMode 
+                      ? 'bg-gray-800 text-blue-primary hover:bg-gray-700' 
+                      : 'bg-gray-100 text-blue-primary hover:bg-gray-200'
+                  } shadow-sm`}>
+                    {language === 'UA' ? 'Переглянути всі' : 'View All Properties'}
+                  </Link>
                 </motion.div>
               </motion.div>
-          </div>
-          
+            </div>
+            
             <motion.div 
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
               initial="hidden"
@@ -569,9 +603,9 @@ const Home = () => {
               {featuredProperties.map(property => (
                 <motion.div 
                   key={property.id}
-                  className={`rounded-lg overflow-hidden shadow-lg border border-theme ${
-                    isDarkMode ? 'bg-gray-800' : 'bg-white'
-                  }`}
+                  className={`rounded-xl overflow-hidden shadow-xl backdrop-blur-sm ${
+                    isDarkMode ? 'bg-gray-800/80' : 'bg-white/80'
+                  } border border-theme`}
                   variants={{
                     hidden: { opacity: 0, y: 30 },
                     visible: { 
@@ -667,14 +701,15 @@ const Home = () => {
             </motion.div>
           </div>
         </section>
-        </div>
+      </div>
       
       {/* Footer */}
       <motion.footer 
-        className={`${isDarkMode ? 'bg-gray-900' : 'bg-gray-800'} text-white`}
+        className={`${isDarkMode ? 'bg-gray-900/70' : 'bg-gray-800/70'} backdrop-blur-sm text-white`}
         style={{ 
-        padding: '3rem 0', 
-        marginTop: 'auto' 
+          padding: '3rem 0', 
+          marginTop: 'auto',
+          borderTop: '1px solid rgba(255,255,255,0.1)'
         }}
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}

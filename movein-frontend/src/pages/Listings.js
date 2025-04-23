@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import PropertyCard from '../components/PropertyCard';
+import propertyApi from '../api/propertyApi';
 
 const Listings = () => {
   const [properties, setProperties] = useState([]);
@@ -22,46 +23,44 @@ const Listings = () => {
     const fetchProperties = async () => {
       setLoading(true);
       try {
-        // Here we will fetch properties from the API
-        // In a real app, replace this with actual API data
+        // Skip API call attempt for now since backend isn't running
+        // Instead, use mock data directly
+        console.log("Using mock data since backend is not running");
         
-        // Simulate API call and delayed response
+        const mockProperties = Array.from({ length: 9 }, (_, i) => ({
+          _id: `property-${i + 1}`,
+          title: `Beautiful ${['Apartment', 'House', 'Penthouse', 'Studio'][i % 4]} in ${['New York', 'Los Angeles', 'Chicago', 'Miami'][i % 4]}`,
+          description: 'This stunning property features modern amenities, spacious rooms, and a prime location close to everything.',
+          price: 500000 + (i * 100000),
+          listingType: i % 2 === 0 ? 'sale' : 'rent',
+          propertyType: ['apartment', 'house', 'penthouse', 'studio'][i % 4],
+          area: 1000 + (i * 100),
+          bedrooms: 1 + (i % 4),
+          bathrooms: 1 + (i % 3),
+          location: {
+            address: `${1000 + i} Main Street`,
+            city: ['New York', 'Los Angeles', 'Chicago', 'Miami'][i % 4],
+            state: ['NY', 'CA', 'IL', 'FL'][i % 4],
+            zipCode: `1000${i}`,
+          },
+          images: [`https://via.placeholder.com/800x600/F8FAFC/E2E8F0?text=Property+${i + 1}`],
+        }));
+        
+        setProperties(mockProperties);
+        setPagination({
+          total: 54,
+          page: page,
+          limit: 9,
+          pages: 6
+        });
+        
+        // Simulate a small delay to show loading state
         setTimeout(() => {
-          // Mock data - in a real app, replace with:
-          // const data = await propertyApi.getProperties({ 
-          //   listingType, minPrice, maxPrice, minBedrooms, city, page 
-          // });
-          
-          const mockProperties = Array.from({ length: 9 }, (_, i) => ({
-            _id: `property-${i + 1}`,
-            title: `Beautiful ${['Apartment', 'House', 'Penthouse', 'Studio'][i % 4]} in ${['New York', 'Los Angeles', 'Chicago', 'Miami'][i % 4]}`,
-            description: 'This stunning property features modern amenities, spacious rooms, and a prime location close to everything.',
-            price: 500000 + (i * 100000),
-            listingType: i % 2 === 0 ? 'sale' : 'rent',
-            propertyType: ['apartment', 'house', 'penthouse', 'studio'][i % 4],
-            area: 1000 + (i * 100),
-            bedrooms: 1 + (i % 4),
-            bathrooms: 1 + (i % 3),
-            location: {
-              address: `${1000 + i} Main Street`,
-              city: ['New York', 'Los Angeles', 'Chicago', 'Miami'][i % 4],
-              state: ['NY', 'CA', 'IL', 'FL'][i % 4],
-              zipCode: `1000${i}`,
-            },
-            images: [`https://via.placeholder.com/800x600/F8FAFC/E2E8F0?text=Property+${i + 1}`],
-          }));
-          
-          setProperties(mockProperties);
-          setPagination({
-            total: 54,
-            page: page,
-            limit: 9,
-            pages: 6
-          });
           setLoading(false);
-        }, 1000);
+        }, 500);
         
       } catch (err) {
+        console.error("Error:", err);
         setError('Failed to load properties. Please try again later.');
         setLoading(false);
       }
