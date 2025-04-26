@@ -1,37 +1,49 @@
-// Simple Express server setup with minimal boilerplate
 const express = require('express');
+const dotenv = require('dotenv');
 const cors = require('cors');
-const mongoose = require('mongoose');
-require('dotenv').config();
+const sequelize = require('./src/config/database');
+const authRoutes = require('./src/routes/authRoutes');
+const userRoutes = require('./src/routes/userRoutes');
+const listings = require('./src/routes/listings');
+const reviewRoutes = require('./src/routes/reviewRoutes');
+const messageRoutes = require('./src/routes/messageRoutes');
+
+// Імпортуємо моделі з асоціаціями
+const { User, Listing, Review, Favorite, Message } = require('./src/models/associations');
+
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
-// Middleware
+// Використання CORS
 app.use(cors());
 app.use(express.json());
 
-// Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/movein')
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('MongoDB connection error:', err));
-
-// Routes
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Server is running' });
+// Основний маршрут для перевірки
+app.get('/', (req, res) => {
+  console.log('GET / endpoint hit');
+  res.send('Welcome to the MoveIn API');
 });
 
-// API Routes
-const propertyRoutes = require('./routes/properties');
-app.use('/api/properties', propertyRoutes);
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong' });
+// Простий тестовий маршрут
+app.get('/test', (req, res) => {
+  console.log('GET /test endpoint hit');
+  res.send('Test route is working!');
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-}); 
+// Маршрути для аутентифікації
+app.use('/api/auth', authRoutes);
+// Маршрути для оголошень
+app.use('/api/listings', listings);
+// Маршрут кабінету
+app.use(userRoutes);
+app.use('/api/reviews', reviewRoutes);
+// Маршрути для чату
+app.use('/api/messages', messageRoutes);
+
+sequelize.sync({ force: false })
+  .then(() => {
+    app.listen(3000, () => console.log('Сервер запущено на порті 3000'));
+  })
+  .catch(error => console.error('Помилка синхронізації:', error));

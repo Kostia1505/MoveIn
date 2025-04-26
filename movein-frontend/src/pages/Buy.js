@@ -1,148 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 import Navbar from '../components/Navbar';
 import PropertyCard from '../components/PropertyCard';
 import FilterPanel from '../components/FilterPanel';
-import { useTheme } from '../contexts/ThemeContext';
-import { useLanguage } from '../contexts/LanguageContext';
-import { motion, AnimatePresence } from 'framer-motion';
 
 const Buy = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const { isDarkMode } = useTheme();
+  const [isFilterVisible, setIsFilterVisible] = useState(true);
   const { language } = useLanguage();
-  const [isFilterVisible, setIsFilterVisible] = useState(window.innerWidth >= 768);
+  const { isDarkMode } = useTheme();
   
-  // Extract filters from URL query params
-  const city = searchParams.get('city') || '';
-  const propertyType = searchParams.get('propertyType') || '';
-  const minPrice = searchParams.get('minPrice') || '';
-  const maxPrice = searchParams.get('maxPrice') || '';
-  const bedrooms = searchParams.get('bedrooms') || '';
-  const bathrooms = searchParams.get('bathrooms') || '';
-  const minArea = searchParams.get('minArea') || '';
-  const maxArea = searchParams.get('maxArea') || '';
-  const features = searchParams.get('features') ? searchParams.get('features').split(',') : [];
+  // Get city from URL parameters for initial filter state
+  const urlCity = searchParams.get('city') || '';
+  const urlMinPrice = searchParams.get('minPrice') || '';
+  const urlMaxPrice = searchParams.get('maxPrice') || '';
   
-  // Filter state
   const [filters, setFilters] = useState({
-    city,
-    propertyType,
-    minPrice,
-    maxPrice,
-    bedrooms,
-    bathrooms,
-    minArea,
-    maxArea,
-    features,
+    city: urlCity,
+    minPrice: urlMinPrice,
+    maxPrice: urlMaxPrice,
+    propertyType: '',
+    bedrooms: '',
+    bathrooms: '',
+    minArea: '',
+    maxArea: '',
+    features: []
   });
   
-  const applyFilters = () => {
-    const params = new URLSearchParams();
-    
-    if (filters.city) params.append('city', filters.city);
-    if (filters.propertyType) params.append('propertyType', filters.propertyType);
-    if (filters.minPrice) params.append('minPrice', filters.minPrice);
-    if (filters.maxPrice) params.append('maxPrice', filters.maxPrice);
-    if (filters.bedrooms) params.append('bedrooms', filters.bedrooms);
-    if (filters.bathrooms) params.append('bathrooms', filters.bathrooms);
-    if (filters.minArea) params.append('minArea', filters.minArea);
-    if (filters.maxArea) params.append('maxArea', filters.maxArea);
-    if (filters.features.length > 0) params.append('features', filters.features.join(','));
-    
-    setSearchParams(params);
-  };
+  // Extract city for display
+  const { city } = filters;
   
-  const resetFilters = () => {
-    setFilters({
-      city: '',
-      propertyType: '',
-      minPrice: '',
-      maxPrice: '',
-      bedrooms: '',
-      bathrooms: '',
-      minArea: '',
-      maxArea: '',
-      features: [],
-    });
-    setSearchParams({});
-  };
-  
-  useEffect(() => {
-    // Mock data loading
-    setTimeout(() => {
-      const mockProperties = Array.from({ length: 9 }, (_, i) => ({
-        _id: `property-${i + 1}`,
-        title: `Beautiful Property in ${city || 'Kyiv'}`,
-        price: 300000 + (i * 75000),
-        listingType: 'sale',
-        propertyType: ['apartment', 'house', 'penthouse', 'studio'][i % 4],
-        bedrooms: 1 + (i % 4),
-        bathrooms: 1 + (i % 3),
-        area: 50 + (i * 25),
-        features: [
-          'parking', 
-          'balcony', 
-          'elevator', 
-          'security', 
-          'garden'
-        ].slice(0, 2 + (i % 3)),
-        location: {
-          city: city || 'Kyiv',
-        },
-        images: [`https://via.placeholder.com/800x600/F8FAFC/E2E8F0?text=Property+${i + 1}`],
-      }));
-      
-      // Apply filtering
-      let filtered = [...mockProperties];
-      
-      if (propertyType) {
-        filtered = filtered.filter(p => p.propertyType === propertyType);
-      }
-      
-      if (minPrice) {
-        filtered = filtered.filter(p => p.price >= parseInt(minPrice));
-      }
-      
-      if (maxPrice) {
-        filtered = filtered.filter(p => p.price <= parseInt(maxPrice));
-      }
-      
-      if (bedrooms) {
-        filtered = filtered.filter(p => p.bedrooms === parseInt(bedrooms));
-      }
-      
-      if (bathrooms) {
-        filtered = filtered.filter(p => p.bathrooms === parseInt(bathrooms));
-      }
-      
-      if (minArea) {
-        filtered = filtered.filter(p => p.area >= parseInt(minArea));
-      }
-      
-      if (maxArea) {
-        filtered = filtered.filter(p => p.area <= parseInt(maxArea));
-      }
-      
-      if (features.length > 0) {
-        filtered = filtered.filter(p => {
-          return features.every(feature => p.features.includes(feature));
-        });
-      }
-      
-      setProperties(filtered);
-      setLoading(false);
-    }, 500);
-  }, [city, propertyType, minPrice, maxPrice, bedrooms, bathrooms, minArea, maxArea, features]);
-  
-  const toggleFilters = () => {
-    setIsFilterVisible(!isFilterVisible);
-  };
-
-  // Feature options for filter
+  // Filter options
   const featureOptions = [
     { id: 'parking', label: language === 'UA' ? 'Паркінг' : 'Parking' },
     { id: 'balcony', label: language === 'UA' ? 'Балкон' : 'Balcony' },
@@ -153,7 +46,90 @@ const Buy = () => {
     { id: 'furnished', label: language === 'UA' ? 'Мебльовано' : 'Furnished' },
     { id: 'air_conditioning', label: language === 'UA' ? 'Кондиціонер' : 'Air Conditioning' }
   ];
-
+  
+  const applyFilters = () => {
+    // In a real application, we would call an API with the filters
+    setLoading(true);
+    
+    // Update URL params
+    const params = new URLSearchParams();
+    if (filters.city) params.set('city', filters.city);
+    if (filters.minPrice) params.set('minPrice', filters.minPrice);
+    if (filters.maxPrice) params.set('maxPrice', filters.maxPrice);
+    setSearchParams(params);
+    
+    // Simulate API call
+    setTimeout(() => {
+      // Filter the properties based on filters
+      setLoading(false);
+    }, 1000);
+  };
+  
+  const resetFilters = () => {
+    setFilters({
+      city: '',
+      minPrice: '',
+      maxPrice: '',
+      propertyType: '',
+      bedrooms: '',
+      bathrooms: '',
+      minArea: '',
+      maxArea: '',
+      features: []
+    });
+    
+    // Clear URL params
+    setSearchParams({});
+    
+    // Simulate API call
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  };
+  
+  useEffect(() => {
+    // Simulate fetching properties data
+    const fetchProperties = async () => {
+      setLoading(true);
+      try {
+        // In a real app, this would be an API call with filters
+        setTimeout(() => {
+          const dummyProperties = Array.from({ length: 9 }, (_, i) => ({
+            _id: `property-${i}`,
+            title: 'Beachfront Luxury Apartment',
+            price: 450000 + (i * 50000),
+            location: {
+              city: 'Sorrento',
+              address: 'Via Marina Grande ' + (i + 1),
+              neighborhood: 'Beachfront'
+            },
+            bedrooms: Math.floor(Math.random() * 3) + 1,
+            bathrooms: Math.floor(Math.random() * 2) + 1,
+            area: 800 + (i * 50),
+            propertyType: i % 2 === 0 ? 'Apartment' : 'Villa',
+            features: ['parking', 'balcony', 'air_conditioning'],
+            images: [`https://source.unsplash.com/800x600/?luxury,apartment,${i}`],
+            description: 'Luxurious beachfront apartment with stunning sea views, offering the perfect blend of comfort and elegance.',
+            listingType: 'sale'
+          }));
+          
+          setProperties(dummyProperties);
+          setLoading(false);
+        }, 1500);
+      } catch (error) {
+        console.error('Error fetching properties:', error);
+        setLoading(false);
+      }
+    };
+    
+    fetchProperties();
+  }, []);
+  
+  const toggleFilters = () => {
+    setIsFilterVisible(!isFilterVisible);
+  };
+  
   // Translations
   const t = {
     propertiesForSale: language === 'UA' ? 'Нерухомість на продаж' : 'Properties for Sale',
@@ -334,7 +310,10 @@ const Buy = () => {
                     }}
                     transition={{ duration: 0.4 }}
                   >
-                    <PropertyCard property={property} />
+                    <PropertyCard property={{
+                      ...property,
+                      location: property.location || { city: 'Unknown', neighborhood: '', address: '' }
+                    }} />
                   </motion.div>
                 ))}
               </motion.div>
@@ -343,14 +322,9 @@ const Buy = () => {
         </div>
       </main>
       
-      {/* Footer */}
-      <footer className={`py-12 mt-20 text-white ${isDarkMode ? 'bg-gray-900' : 'bg-gray-800'}`}>
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-gray-400">© {new Date().getFullYear()} MoveIN. {t.rights}</p>
-        </div>
-      </footer>
+      {/* Footer removed - using Layout component footer instead */}
     </div>
   );
 };
 
-export default Buy;
+export default Buy; 

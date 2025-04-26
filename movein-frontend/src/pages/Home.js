@@ -702,36 +702,6 @@ const Home = () => {
           </div>
         </section>
       </div>
-      
-      {/* Footer */}
-      <motion.footer 
-        className={`${isDarkMode ? 'bg-gray-900/70' : 'bg-gray-800/70'} backdrop-blur-sm text-white`}
-        style={{ 
-          padding: '3rem 0', 
-          marginTop: 'auto',
-          borderTop: '1px solid rgba(255,255,255,0.1)'
-        }}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="container">
-          <motion.div 
-            style={{ textAlign: 'center' }}
-            initial={{ y: 10 }}
-            whileInView={{ y: 0 }}
-            viewport={{ once: true }}
-            transition={{ 
-              type: "spring", 
-              stiffness: 260, 
-              damping: 20 
-            }}
-          >
-            <p style={{ color: '#9CA3AF' }}>© {new Date().getFullYear()} MoveIN. All rights reserved.</p>
-          </motion.div>
-        </div>
-      </motion.footer>
     </div>
   );
 };

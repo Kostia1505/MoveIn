@@ -305,27 +305,46 @@ const Navbar = () => {
           ) : (
             <div className="hidden md:flex items-center space-x-2">
               <motion.div
+                className="inline-block"
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <Link
                   to="/login"
-                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    isDarkMode 
-                      ? 'bg-gray-800 text-theme-primary hover:bg-gray-700' 
-                      : 'bg-gray-100 text-theme-primary hover:bg-gray-200'
-                  }`}
+                  className="inline-block px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+                  style={{
+                    backgroundColor: isDarkMode ? 'rgb(31, 41, 55)' : 'rgb(243, 244, 246)',
+                    color: isDarkMode ? 'white' : 'rgb(55, 65, 81)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = isDarkMode ? 'rgb(55, 65, 81)' : 'rgb(229, 231, 235)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = isDarkMode ? 'rgb(31, 41, 55)' : 'rgb(243, 244, 246)';
+                  }}
                 >
                   {language === 'UA' ? "Увійти" : "Login"}
                 </Link>
               </motion.div>
+              
               <motion.div
+                className="inline-block"
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.2 }}
               >
                 <Link
                   to="/signup"
-                  className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-primary hover:bg-blue-hover text-white transition-colors shadow-sm"
+                  className="inline-block px-4 py-2 text-sm font-medium rounded-lg text-white shadow-sm transition-colors"
+                  style={{
+                    backgroundColor: 'rgb(37, 99, 235)', // blue-primary
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgb(29, 78, 216)'; // blue-hover
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgb(37, 99, 235)'; // blue-primary
+                  }}
                 >
                   {language === 'UA' ? "Реєстрація" : "Sign Up"}
                 </Link>

@@ -117,6 +117,24 @@ const PropertyCard = ({ property }) => {
       : '0 2px 15px -3px rgba(0, 0, 0, 0.07)';
   };
 
+  // Handle location display safely
+  const getLocationText = () => {
+    if (!location) return 'Location not specified';
+    
+    const city = location.city || '';
+    const neighborhood = location.neighborhood || '';
+    const address = location.address || '';
+    
+    if (neighborhood && city) {
+      return `${neighborhood}, ${city}`;
+    } else if (city) {
+      return city;
+    } else if (address) {
+      return address;
+    }
+    return 'Location not specified';
+  };
+
   return (
     <div 
       style={cardStyle}
@@ -125,7 +143,7 @@ const PropertyCard = ({ property }) => {
       className="card"
     >
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <Link to={`/properties/${_id}`}>
+        <Link to={`/property/${_id}`}>
           <img 
             src={imageUrl} 
             alt={title} 
@@ -159,7 +177,7 @@ const PropertyCard = ({ property }) => {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.25rem' }}>
             <h3 style={titleStyle}>
               <Link 
-                to={`/properties/${_id}`} 
+                to={`/property/${_id}`} 
                 style={titleLinkStyle} 
                 onMouseOver={(e) => e.target.style.color = isDarkMode ? '#60A5FA' : '#4F46E5'} 
                 onMouseOut={(e) => e.target.style.color = isDarkMode ? '#E5E7EB' : '#111827'}
@@ -173,9 +191,7 @@ const PropertyCard = ({ property }) => {
             </span>
           </div>
           <p style={locationStyle}>
-            {location.city}
-            {location.neighborhood && `, ${location.neighborhood}`}
-            {location.address && `, ${location.address}`}
+            {getLocationText()}
           </p>
         </div>
 

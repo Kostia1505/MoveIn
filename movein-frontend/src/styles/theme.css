@@ -1,0 +1,38 @@
+:root {
+  /* Dark theme colors from the image */
+  --dark-bg-primary: #171E26;     /* Dark blue-gray background */
+  --dark-bg-secondary: #1E2631;   /* Slightly lighter blue-gray for cards */
+  --dark-bg-tertiary: #252E3A;    /* Even lighter blue-gray for inputs/elements */
+  
+  --dark-text-primary: #FFFFFF;   /* White text */
+  --dark-text-secondary: #B0B7C3; /* Light gray text for secondary content */
+  --dark-text-muted: #6B7280;     /* Darker gray for less important text */
+  
+  --dark-border: #2D3748;         /* Border color */
+  
+  --dark-accent: #3B82F6;         /* Blue accent color (buttons/links) */
+  --dark-accent-hover: #2563EB;   /* Darker blue for hover states */
+  
+  /* Additional UI colors */
+  --dark-card-bg: rgba(30, 38, 49, 0.95);  /* Card background with some transparency */
+  --dark-input-bg: #252E3A;        /* Form input background */
+}
+
+/* Default theme variables (can be overridden by user preference) */
+:root {
+  --bg-primary: var(--dark-bg-primary);
+  --bg-secondary: var(--dark-bg-secondary);
+  --bg-tertiary: var(--dark-bg-tertiary);
+  
+  --text-primary: var(--dark-text-primary);
+  --text-secondary: var(--dark-text-secondary);
+  --text-muted: var(--dark-text-muted);
+  
+  --border: var(--dark-border);
+  
+  --accent: var(--dark-accent);
+  --accent-hover: var(--dark-accent-hover);
+  
+  --card-bg: var(--dark-card-bg);
+  --input-bg: var(--dark-input-bg);
+} 

@@ -488,7 +488,10 @@ const Properties = () => {
                       visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
                     }}
                   >
-                    <PropertyCard property={property} />
+                    <PropertyCard property={{
+                      ...property,
+                      location: property.location || { city: 'Unknown', neighborhood: '', address: '' }
+                    }} />
                   </motion.div>
                 ))}
               </motion.div>
@@ -496,12 +499,6 @@ const Properties = () => {
           </motion.div>
         </div>
       </main>
-      
-      <footer className="bg-gray-800 text-white py-12 mt-auto">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-gray-400">© {new Date().getFullYear()} MoveIN. All rights reserved.</p>
-        </div>
-      </footer>
     </div>
   );
 };

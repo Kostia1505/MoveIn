@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import { useTheme } from '../contexts/ThemeContext';
 
 const Sell = () => {
   const navigate = useNavigate();
+  const { isDarkMode } = useTheme();
   const [formData, setFormData] = useState({
     propertyType: '',
     bedrooms: '',
@@ -28,6 +30,7 @@ const Sell = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
     // In a real app, you would send this data to your backend API
     console.log('Form submitted:', formData);
     setSubmitted(true);
@@ -38,16 +41,22 @@ const Sell = () => {
     }, 3000);
   };
 
+  // Apply theme styles
+  const themeStyles = {
+    backgroundColor: isDarkMode ? 'var(--bg-primary)' : 'var(--bg-secondary)',
+    color: isDarkMode ? 'var(--text-primary)' : 'var(--text-primary)',
+  };
+
   if (submitted) {
     return (
-      <div className="bg-theme-primary text-theme-primary transition-colors duration-200" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div className="min-h-screen" style={themeStyles}>
         <Navbar />
         <div className="container mx-auto px-4 py-16 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="max-w-lg mx-auto p-8 bg-white rounded-lg shadow-lg"
+            className={`max-w-lg mx-auto p-8 rounded-lg shadow-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}
           >
             <h2 className="text-2xl font-bold text-green-600 mb-4">Thank You!</h2>
             <p className="mb-4">Your property listing request has been submitted successfully.</p>
@@ -59,7 +68,7 @@ const Sell = () => {
   }
 
   return (
-    <div className="bg-theme-primary text-theme-primary transition-colors duration-200" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="min-h-screen" style={themeStyles}>
       <Navbar />
       <div className="container mx-auto px-4 py-12">
         <motion.div
@@ -69,11 +78,11 @@ const Sell = () => {
           className="max-w-4xl mx-auto"
         >
           <h1 className="text-3xl font-bold mb-2">Sell Your Property</h1>
-          <p className="text-gray-600 mb-8">
+          <p className={`mb-8 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
             Fill out the form below to get started with selling your property. Our team will contact you to discuss next steps.
           </p>
           
-          <div className="bg-white rounded-lg shadow-lg p-6 md:p-8">
+          <div className={`rounded-lg shadow-lg p-6 md:p-8 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="col-span-2">
@@ -81,7 +90,7 @@ const Sell = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-gray-700 mb-2" htmlFor="propertyType">
+                  <label className={`block mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`} htmlFor="propertyType">
                     Property Type *
                   </label>
                   <select
@@ -89,7 +98,11 @@ const Sell = () => {
                     name="propertyType"
                     value={formData.propertyType}
                     onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      isDarkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white' 
+                        : 'border border-gray-300 text-gray-900'
+                    }`}
                     required
                   >
                     <option value="">Select Property Type</option>
@@ -103,7 +116,7 @@ const Sell = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-gray-700 mb-2" htmlFor="location">
+                  <label className={`block mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`} htmlFor="location">
                     Location *
                   </label>
                   <input
@@ -113,13 +126,17 @@ const Sell = () => {
                     value={formData.location}
                     onChange={handleChange}
                     placeholder="City, Street"
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      isDarkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                        : 'border border-gray-300 text-gray-900 placeholder-gray-500'
+                    }`}
                     required
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-gray-700 mb-2" htmlFor="bedrooms">
+                  <label className={`block mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`} htmlFor="bedrooms">
                     Bedrooms *
                   </label>
                   <select
@@ -127,7 +144,11 @@ const Sell = () => {
                     name="bedrooms"
                     value={formData.bedrooms}
                     onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      isDarkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white' 
+                        : 'border border-gray-300 text-gray-900'
+                    }`}
                     required
                   >
                     <option value="">Select Bedrooms</option>
@@ -141,7 +162,7 @@ const Sell = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-gray-700 mb-2" htmlFor="bathrooms">
+                  <label className={`block mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`} htmlFor="bathrooms">
                     Bathrooms *
                   </label>
                   <select
@@ -149,7 +170,11 @@ const Sell = () => {
                     name="bathrooms"
                     value={formData.bathrooms}
                     onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      isDarkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white' 
+                        : 'border border-gray-300 text-gray-900'
+                    }`}
                     required
                   >
                     <option value="">Select Bathrooms</option>
@@ -161,7 +186,7 @@ const Sell = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-gray-700 mb-2" htmlFor="area">
+                  <label className={`block mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`} htmlFor="area">
                     Area (sq m) *
                   </label>
                   <input
@@ -171,13 +196,17 @@ const Sell = () => {
                     value={formData.area}
                     onChange={handleChange}
                     placeholder="e.g. 85"
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      isDarkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                        : 'border border-gray-300 text-gray-900 placeholder-gray-500'
+                    }`}
                     required
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-gray-700 mb-2" htmlFor="price">
+                  <label className={`block mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`} htmlFor="price">
                     Expected Price (€) *
                   </label>
                   <input
@@ -187,7 +216,11 @@ const Sell = () => {
                     value={formData.price}
                     onChange={handleChange}
                     placeholder="e.g. 250000"
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      isDarkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                        : 'border border-gray-300 text-gray-900 placeholder-gray-500'
+                    }`}
                     required
                   />
                 </div>
@@ -197,7 +230,7 @@ const Sell = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-gray-700 mb-2" htmlFor="name">
+                  <label className={`block mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`} htmlFor="name">
                     Full Name *
                   </label>
                   <input
@@ -207,13 +240,17 @@ const Sell = () => {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Your full name"
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      isDarkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                        : 'border border-gray-300 text-gray-900 placeholder-gray-500'
+                    }`}
                     required
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-gray-700 mb-2" htmlFor="email">
+                  <label className={`block mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`} htmlFor="email">
                     Email *
                   </label>
                   <input
@@ -223,13 +260,17 @@ const Sell = () => {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="your.email@example.com"
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      isDarkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                        : 'border border-gray-300 text-gray-900 placeholder-gray-500'
+                    }`}
                     required
                   />
                 </div>
                 
                 <div className="col-span-2">
-                  <label className="block text-gray-700 mb-2" htmlFor="phone">
+                  <label className={`block mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`} htmlFor="phone">
                     Phone Number *
                   </label>
                   <input
@@ -239,18 +280,24 @@ const Sell = () => {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="e.g. +380 XX XXX XXXX"
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      isDarkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                        : 'border border-gray-300 text-gray-900 placeholder-gray-500'
+                    }`}
                     required
                   />
                 </div>
                 
                 <div className="col-span-2 mt-6">
-                  <button
+                  <motion.button
                     type="submit"
                     className="bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 transition duration-200 w-full md:w-auto"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    Submit Property
-                  </button>
+                    Submit Listing
+                  </motion.button>
                 </div>
               </div>
             </form>

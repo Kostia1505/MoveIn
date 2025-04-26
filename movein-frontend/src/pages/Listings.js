@@ -131,7 +131,10 @@ const Listings = () => {
                 gap: '2rem' 
               }}>
                 {properties.map(property => (
-                  <PropertyCard key={property._id} property={property} />
+                  <PropertyCard key={property._id} property={{
+                    ...property,
+                    location: property.location || { city: 'Unknown', neighborhood: '', address: '' }
+                  }} />
                 ))}
               </div>
               
@@ -162,18 +165,7 @@ const Listings = () => {
         </div>
       </main>
       
-      {/* Footer */}
-      <footer style={{ 
-        backgroundColor: '#1F2937', 
-        color: 'white', 
-        padding: '3rem 0' 
-      }}>
-        <div className="container">
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ color: '#9CA3AF' }}>© {new Date().getFullYear()} MoveIN. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      {/* Footer removed - using Layout component footer instead */}
     </div>
   );
 };

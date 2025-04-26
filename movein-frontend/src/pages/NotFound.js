@@ -43,18 +43,6 @@ const NotFound = () => {
           </Link>
         </div>
       </div>
-      
-      <footer style={{ 
-        backgroundColor: '#1F2937', 
-        color: 'white', 
-        padding: '3rem 0' 
-      }}>
-        <div className="container">
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ color: '#9CA3AF' }}>© {new Date().getFullYear()} MoveIN. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

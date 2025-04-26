@@ -18,7 +18,43 @@ module.exports = {
           700: '#334155',
           800: '#1e293b',
           900: '#0f172a',
+        },
+        blue: {
+          primary: '#3B82F6',
+          hover: '#2563EB'
+        },
+        theme: {
+          dark: {
+            bg: {
+              primary: '#171E26',
+              secondary: '#1E2631',
+              tertiary: '#252E3A',
+              card: 'rgba(30, 38, 49, 0.95)',
+              input: '#252E3A'
+            },
+            text: {
+              primary: '#FFFFFF',
+              secondary: '#B0B7C3',
+              muted: '#6B7280'
+            },
+            border: '#2D3748'
+          }
         }
+      },
+      backgroundColor: {
+        'theme-primary': 'var(--bg-primary)',
+        'theme-secondary': 'var(--bg-secondary)',
+        'theme-tertiary': 'var(--bg-tertiary)',
+        'theme-card': 'var(--card-bg)',
+        'theme-input': 'var(--input-bg)',
+      },
+      textColor: {
+        'theme-primary': 'var(--text-primary)',
+        'theme-secondary': 'var(--text-secondary)',
+        'theme-muted': 'var(--text-muted)',
+      },
+      borderColor: {
+        'theme': 'var(--border)',
       }
     },
   },

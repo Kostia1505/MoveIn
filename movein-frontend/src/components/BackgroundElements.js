@@ -40,8 +40,81 @@ export const GradientBackground = ({ children }) => {
 };
 
 export const FloatingShapes = () => {
-  // Return empty to remove floating shapes
-  return null;
+  const { isDarkMode } = useTheme();
+  
+  return (
+    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+      {/* Warm gradient background similar to first image */}
+      <div 
+        className="absolute inset-0 opacity-70"
+        style={{
+          background: isDarkMode 
+            ? 'linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%)'
+            : 'linear-gradient(135deg, rgba(255, 166, 83, 0.2) 0%, rgba(255, 138, 0, 0.1) 100%)'
+        }}
+      />
+      
+      {/* Large blob shape in the background */}
+      <motion.div
+        className="absolute -top-[30%] -left-[10%] w-[70%] h-[70%] rounded-full opacity-20"
+        style={{
+          background: isDarkMode 
+            ? 'radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, rgba(37, 99, 235, 0) 70%)'
+            : 'radial-gradient(circle, rgba(255, 107, 0, 0.3) 0%, rgba(255, 166, 83, 0) 70%)',
+          filter: 'blur(60px)'
+        }}
+        animate={{
+          x: [0, 20, 0],
+          y: [0, 15, 0],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          repeatType: "reverse"
+        }}
+      />
+      
+      {/* Secondary blob shape */}
+      <motion.div
+        className="absolute bottom-[10%] right-[5%] w-[50%] h-[50%] rounded-full opacity-20"
+        style={{
+          background: isDarkMode 
+            ? 'radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, rgba(79, 70, 229, 0) 70%)'
+            : 'radial-gradient(circle, rgba(255, 138, 76, 0.3) 0%, rgba(255, 107, 0, 0) 70%)',
+          filter: 'blur(50px)'
+        }}
+        animate={{
+          x: [0, -30, 0],
+          y: [0, 20, 0],
+        }}
+        transition={{
+          duration: 25,
+          repeat: Infinity,
+          repeatType: "reverse"
+        }}
+      />
+      
+      {/* Blue subtle blob for second style reference */}
+      <motion.div
+        className="absolute top-[40%] right-[15%] w-[40%] h-[40%] rounded-full opacity-15"
+        style={{
+          background: isDarkMode 
+            ? 'radial-gradient(circle, rgba(56, 189, 248, 0.3) 0%, rgba(14, 165, 233, 0) 70%)'
+            : 'radial-gradient(circle, rgba(96, 165, 250, 0.2) 0%, rgba(59, 130, 246, 0) 70%)',
+          filter: 'blur(45px)'
+        }}
+        animate={{
+          x: [0, 25, 0],
+          y: [0, -15, 0],
+        }}
+        transition={{
+          duration: 22,
+          repeat: Infinity,
+          repeatType: "reverse"
+        }}
+      />
+    </div>
+  );
 };
 
 export const AnimatedGlassCard = ({ children, className }) => {
