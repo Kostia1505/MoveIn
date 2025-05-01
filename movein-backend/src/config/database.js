@@ -3,9 +3,17 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-const sequelize = new Sequelize(process.env.DB_URL, {
+// Use a direct connection configuration
+const sequelize = new Sequelize('movein_db', 'postgres', 'postgres', {
+  host: 'localhost',
   dialect: 'postgres',
-  logging: false,
+  port: 5432,
+  logging: console.log // Turn on logging to see SQL queries
 });
+
+// Test connection on startup
+sequelize.authenticate()
+  .then(() => console.log('Database connection established successfully'))
+  .catch(err => console.error('Unable to connect to the database:', err));
 
 module.exports = sequelize;

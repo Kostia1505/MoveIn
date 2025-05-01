@@ -97,6 +97,7 @@ router.get('/:id', async (req, res) => {
 router.post('/', authMiddleware, async (req, res) => {
   try {
     const { title, description, price, location, operationType, propertyType, rooms, floors } = req.body;
+    
     const newListing = await Listing.create({
       title,
       description,
@@ -108,6 +109,7 @@ router.post('/', authMiddleware, async (req, res) => {
       floors,
       ownerId: req.user.id
     });
+    
     res.status(201).json(newListing);
   } catch (error) {
     res.status(400).json({ error: 'Невірні дані' });
