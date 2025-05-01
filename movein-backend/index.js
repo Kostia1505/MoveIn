@@ -42,8 +42,8 @@ app.use('/api/reviews', reviewRoutes);
 // Маршрути для чату
 app.use('/api/messages', messageRoutes);
 
-sequelize.sync({ force: false })
+sequelize.sync({ force: true })
   .then(() => {
-    app.listen(3000, () => console.log('Сервер запущено на порті 3000'));
+    app.listen(PORT, () => console.log(`Сервер запущено на порті ${PORT}`));
   })
   .catch(error => console.error('Помилка синхронізації:', error));
