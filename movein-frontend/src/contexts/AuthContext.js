@@ -1,22 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-
-// Mock user data for local development
-const MOCK_USERS = [
-  {
-    id: 1,
-    firstName: 'Тарас',
-    lastName: 'Шевченко',
-    email: 'test@example.com',
-    password: 'password123'
-  },
-  {
-    id: 2,
-    firstName: 'Леся',
-    lastName: 'Українка',
-    email: 'user@example.com',
-    password: 'password123'
-  }
-];
+import authApi from '../api/authApi';
 
 const AuthContext = createContext();
 
@@ -28,12 +11,15 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Check for user in localStorage on initial load
     const storedUser = localStorage.getItem('moveInUser');
-    if (storedUser) {
+    const storedToken = localStorage.getItem('token');
+    
+    if (storedUser && storedToken) {
       try {
         setCurrentUser(JSON.parse(storedUser));
       } catch (e) {
         console.error('Failed to parse stored user', e);
         localStorage.removeItem('moveInUser');
+        localStorage.removeItem('token');
       }
     }
     setLoading(false);
@@ -45,25 +31,17 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     
     try {
-      // In a real app, this would be an API call
-      // For now, mock the authentication
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
+      // Make real API call
+      const response = await authApi.login({ email, password });
       
-      const user = MOCK_USERS.find(
-        u => u.email.toLowerCase() === email.toLowerCase() && u.password === password
-      );
+      // Store user data and token
+      setCurrentUser(response.user);
+      localStorage.setItem('moveInUser', JSON.stringify(response.user));
+      // Token is stored by authApi.login
       
-      if (!user) {
-        throw new Error('Невірна електронна пошта або пароль');
-      }
-      
-      // Don't include password in the stored user object
-      const { password: _, ...userWithoutPassword } = user;
-      setCurrentUser(userWithoutPassword);
-      localStorage.setItem('moveInUser', JSON.stringify(userWithoutPassword));
-      return userWithoutPassword;
+      return response.user;
     } catch (error) {
-      setError(error.message);
+      setError(error.message || 'Login failed');
       throw error;
     } finally {
       setLoading(false);
@@ -76,34 +54,24 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     
     try {
-      // Check if email already exists
-      const existingUser = MOCK_USERS.find(
-        u => u.email.toLowerCase() === userData.email.toLowerCase()
-      );
+      // Make real API call
+      const response = await authApi.register(userData);
       
-      if (existingUser) {
-        throw new Error('Користувач з такою електронною поштою вже існує');
-      }
-      
-      // In a real app, this would be an API call
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
-      
-      // Create new user (in a real app this would be done on the server)
-      const newUser = {
-        id: MOCK_USERS.length + 1,
-        ...userData
+      // Ensure we have a consistent user object structure
+      const user = {
+        ...response.user,
+        firstName: userData.firstName,
+        lastName: userData.lastName
       };
       
-      // Add to mock users (this would persist only until page refresh in this example)
-      MOCK_USERS.push(newUser);
+      // Store user in state and localStorage
+      setCurrentUser(user);
+      localStorage.setItem('moveInUser', JSON.stringify(user));
+      // Token is stored by authApi.register
       
-      // Store user in state and localStorage (without password)
-      const { password: _, confirmPassword: __, ...userWithoutPassword } = newUser;
-      setCurrentUser(userWithoutPassword);
-      localStorage.setItem('moveInUser', JSON.stringify(userWithoutPassword));
-      return userWithoutPassword;
+      return user;
     } catch (error) {
-      setError(error.message);
+      setError(error.message || 'Registration failed');
       throw error;
     } finally {
       setLoading(false);
@@ -112,6 +80,7 @@ export const AuthProvider = ({ children }) => {
 
   // Logout function
   const logout = () => {
+    authApi.logout(); // This removes the token
     setCurrentUser(null);
     localStorage.removeItem('moveInUser');
   };

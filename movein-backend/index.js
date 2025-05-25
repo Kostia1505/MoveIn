@@ -16,8 +16,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Використання CORS
-app.use(cors());
+// Configure CORS to allow requests from frontend
+app.use(cors({
+  origin: ['http://localhost:5000', 'http://localhost:3000', 'http://localhost:3001'],
+  credentials: true
+}));
 app.use(express.json());
 
 // Основний маршрут для перевірки
@@ -42,7 +45,8 @@ app.use('/api/reviews', reviewRoutes);
 // Маршрути для чату
 app.use('/api/messages', messageRoutes);
 
-sequelize.sync({ force: true })
+// Use normal sync to prevent data loss on restart
+sequelize.sync({ force: false })
   .then(() => {
     app.listen(PORT, () => console.log(`Сервер запущено на порті ${PORT}`));
   })

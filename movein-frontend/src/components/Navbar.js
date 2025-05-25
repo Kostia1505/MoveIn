@@ -247,18 +247,24 @@ const Navbar = () => {
                 whileTap={{ scale: 0.95 }}
               >
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center bg-blue-primary text-white`}>
-                  {currentUser.firstName.charAt(0)}{currentUser.lastName.charAt(0)}
+                  {currentUser.username ? currentUser.username.charAt(0).toUpperCase() : currentUser.email.charAt(0).toUpperCase()}
                 </div>
-                <span className="hidden md:block text-theme-primary">{currentUser.firstName}</span>
-                <svg
+                <span className="hidden sm:block">{currentUser.username || currentUser.email.split('@')[0]}</span>
+                <motion.svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className={`h-4 w-4 text-theme-secondary transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`}
-                  fill="none"
+                  width="16"
+                  height="16"
                   viewBox="0 0 24 24"
+                  fill="none"
                   stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  animate={{ rotate: isUserMenuOpen ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
+                  <path d="m6 9 6 6 6-6"/>
+                </motion.svg>
               </motion.button>
 
               <AnimatePresence>

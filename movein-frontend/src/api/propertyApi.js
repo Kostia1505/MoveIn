@@ -1,6 +1,4 @@
-import axios from 'axios';
-
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+import apiClient from './apiClient';
 
 const propertyApi = {
   // Get all properties with optional filters
@@ -15,7 +13,7 @@ const propertyApi = {
         }
       });
       
-      const response = await axios.get(`${API_URL}/properties?${queryParams}`);
+      const response = await apiClient.get(`/properties?${queryParams}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching properties:', error);
@@ -26,7 +24,7 @@ const propertyApi = {
   // Get a single property by ID
   getProperty: async (id) => {
     try {
-      const response = await axios.get(`${API_URL}/properties/${id}`);
+      const response = await apiClient.get(`/properties/${id}`);
       return response.data;
     } catch (error) {
       console.error(`Error fetching property with ID ${id}:`, error);
@@ -37,7 +35,7 @@ const propertyApi = {
   // Create a new property
   createProperty: async (propertyData) => {
     try {
-      const response = await axios.post(`${API_URL}/properties`, propertyData);
+      const response = await apiClient.post(`/properties`, propertyData);
       return response.data;
     } catch (error) {
       console.error('Error creating property:', error);
@@ -48,7 +46,7 @@ const propertyApi = {
   // Update a property
   updateProperty: async (id, propertyData) => {
     try {
-      const response = await axios.put(`${API_URL}/properties/${id}`, propertyData);
+      const response = await apiClient.put(`/properties/${id}`, propertyData);
       return response.data;
     } catch (error) {
       console.error(`Error updating property with ID ${id}:`, error);
@@ -59,7 +57,7 @@ const propertyApi = {
   // Delete a property
   deleteProperty: async (id) => {
     try {
-      const response = await axios.delete(`${API_URL}/properties/${id}`);
+      const response = await apiClient.delete(`/properties/${id}`);
       return response.data;
     } catch (error) {
       console.error(`Error deleting property with ID ${id}:`, error);

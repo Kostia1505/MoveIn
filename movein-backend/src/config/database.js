@@ -3,8 +3,8 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-// Use a direct connection configuration
-const sequelize = new Sequelize('movein_db', 'postgres', 'postgres', {
+// Use a direct connection configuration with current user
+const sequelize = new Sequelize('movein_db', process.env.USER || 'maksympushkash', '', {
   host: 'localhost',
   dialect: 'postgres',
   port: 5432,

@@ -10,6 +10,11 @@ const register = async (req, res) => {
     // Extract data from request body
     const { firstName, lastName, email, password } = req.body;
     
+    // Validate required fields
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+    
     // Create username from firstName and lastName if provided
     const username = firstName && lastName 
       ? `${firstName} ${lastName}` 
@@ -26,7 +31,9 @@ const register = async (req, res) => {
     
     // Create user
     const user = await User.create({ 
-      username, 
+      username,
+      firstName,
+      lastName, 
       email, 
       password: hashedPassword 
     });
@@ -38,6 +45,8 @@ const register = async (req, res) => {
     const userData = {
       id: user.id,
       username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email
     };
     
@@ -49,8 +58,14 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { email, password } = req.body;
   try {
+    const { email, password } = req.body;
+    
+    // Validate required fields
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+    
     const user = await User.findOne({ where: { email } });
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ error: 'Invalid credentials' });
@@ -62,6 +77,8 @@ const login = async (req, res) => {
     const userData = {
       id: user.id,
       username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email
     };
     

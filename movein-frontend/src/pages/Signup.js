@@ -49,9 +49,12 @@ const Signup = () => {
     
     setIsLoading(true);
     try {
-      await signup(formData);
+      // Remove confirmPassword before sending to API
+      const { confirmPassword, ...userData } = formData;
+      await signup(userData);
       // Navigation happens in useEffect
     } catch (err) {
+      console.error('Signup error:', err);
       setError(err.message || (language === 'UA' ? 'Помилка реєстрації' : 'Failed to create account'));
     } finally {
       setIsLoading(false);
