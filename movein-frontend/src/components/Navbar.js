@@ -25,7 +25,6 @@ const Navbar = () => {
     { name: language === 'UA' ? 'Купити' : 'Buy', path: '/buy' },
     { name: language === 'UA' ? 'Орендувати' : 'Rent', path: '/rent' },
     { name: language === 'UA' ? 'Продати' : 'Sell', path: '/sell' },
-    { name: language === 'UA' ? 'Допомога' : 'Help', path: '/help' },
   ];
 
   const handleLanguageChange = (lang) => {
@@ -287,15 +286,6 @@ const Navbar = () => {
                     >
                       {language === 'UA' ? 'Мій кабінет' : 'Dashboard'}
                     </Link>
-                    <Link
-                      to="/settings"
-                      className={`block px-4 py-2 text-sm rounded-md mx-1 my-1 ${
-                        isDarkMode ? 'hover:bg-gray-700 text-theme-primary' : 'hover:bg-gray-100 text-theme-primary'
-                      }`}
-                      onClick={() => setIsUserMenuOpen(false)}
-                    >
-                      {language === 'UA' ? 'Налаштування' : 'Settings'}
-                    </Link>
                     <button
                       onClick={handleLogout}
                       className={`block w-full text-left px-4 py-2 text-sm rounded-md mx-1 my-1 ${
@@ -364,11 +354,10 @@ const Navbar = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.4 }}
-            onHoverStart={() => setIsHovered(true)}
-            onHoverEnd={() => setIsHovered(false)}
           >
             <motion.button
               type="button"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
               className={`p-2 rounded-lg text-theme-secondary ${
                 isDarkMode 
                   ? 'bg-gray-800 hover:bg-gray-700 hover:text-theme-primary' 
@@ -383,76 +372,80 @@ const Navbar = () => {
               </svg>
             </motion.button>
 
-            {/* Hover menu */}
+            {/* Mobile menu */}
             <AnimatePresence>
-              {isHovered && (
+              {isMenuOpen && (
                 <motion.div
-                  className="absolute top-full right-0 mt-2 py-2 w-48 rounded-lg shadow-lg z-10 theme-card border"
-                  initial={{ opacity: 0, scaleY: 0, scaleX: 0.8 }}
-                  animate={{ opacity: 1, scaleY: 1, scaleX: 1 }}
-                  exit={{ opacity: 0, scaleY: 0, scaleX: 0.8 }}
-                  transition={{ duration: 0.2, ease: "easeOut" }}
-                  style={{ transformOrigin: 'top right' }}
+                  className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setIsMenuOpen(false)}
                 >
-                  {navLinks.map((link, index) => (
-                    <motion.div
-                      key={link.path}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ 
-                        opacity: 1, 
-                        x: 0,
-                        transition: { delay: 0.05 * index } 
-                      }}
-                      whileHover={{ x: 5 }}
-                    >
-                      <Link
-                        to={link.path}
-                        className={`block px-4 py-2 text-sm transition-colors rounded-md mx-1 my-1 ${
-                          isActive(link.path) 
-                            ? `${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'} text-blue-primary` 
-                            : `text-theme-secondary hover:text-theme-primary ${
-                                isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                              }`
-                        }`}
+                  <motion.div
+                    className="absolute right-4 top-16 w-64 py-2 rounded-lg shadow-lg z-50 theme-card border"
+                    initial={{ opacity: 0, scale: 0.95, x: 20 }}
+                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, x: 20 }}
+                    transition={{ duration: 0.2 }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {navLinks.map((link, index) => (
+                      <motion.div
+                        key={link.path}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ 
+                          opacity: 1, 
+                          x: 0,
+                          transition: { delay: 0.05 * index } 
+                        }}
                       >
-                        {link.name}
-                      </Link>
-                    </motion.div>
-                  ))}
-                  <motion.div
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ 
-                      opacity: 1, 
-                      x: 0,
-                      transition: { delay: 0.05 * navLinks.length } 
-                    }}
-                    className="mt-1 pt-1 border-t border-theme"
-                    whileHover={{ x: 5 }}
-                  >
-                    <Link
-                      to="/login"
-                      className={`block px-4 py-2 text-sm transition-colors rounded-md mx-1 my-1 text-theme-secondary ${
-                        isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                      } hover:text-theme-primary`}
-                    >
-                      {language === 'UA' ? "Увійти" : "Login"}
-                    </Link>
-                  </motion.div>
-                  <motion.div
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ 
-                      opacity: 1, 
-                      x: 0,
-                      transition: { delay: 0.05 * (navLinks.length + 1) } 
-                    }}
-                    whileHover={{ x: 5 }}
-                  >
-                    <Link 
-                      to="/signup"
-                      className="block mx-4 mt-1 px-4 py-2 text-sm font-medium text-center text-white bg-blue-primary hover:bg-blue-hover rounded-lg transition-colors shadow-sm"
-                    >
-                      {language === 'UA' ? "Реєстрація" : "Sign Up"}
-                    </Link>
+                        <Link
+                          to={link.path}
+                          onClick={() => setIsMenuOpen(false)}
+                          className={`block px-4 py-3 text-base transition-colors ${
+                            isActive(link.path) 
+                              ? `${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'} text-blue-primary` 
+                              : `text-theme-secondary hover:text-theme-primary ${
+                                  isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                                }`
+                          }`}
+                        >
+                          {link.name}
+                        </Link>
+                      </motion.div>
+                    ))}
+                    
+                    {!currentUser && (
+                      <>
+                        <div className="border-t border-theme my-2"></div>
+                        <motion.div
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ 
+                            opacity: 1, 
+                            x: 0,
+                            transition: { delay: 0.05 * (navLinks.length + 1) } 
+                          }}
+                        >
+                          <Link
+                            to="/login"
+                            onClick={() => setIsMenuOpen(false)}
+                            className={`block px-4 py-3 text-base transition-colors text-theme-secondary ${
+                              isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                            } hover:text-theme-primary`}
+                          >
+                            {language === 'UA' ? "Увійти" : "Login"}
+                          </Link>
+                          <Link 
+                            to="/signup"
+                            onClick={() => setIsMenuOpen(false)}
+                            className="block mx-4 mt-2 px-4 py-2 text-base font-medium text-center text-white bg-blue-primary hover:bg-blue-hover rounded-lg transition-colors shadow-sm"
+                          >
+                            {language === 'UA' ? "Реєстрація" : "Sign Up"}
+                          </Link>
+                        </motion.div>
+                      </>
+                    )}
                   </motion.div>
                 </motion.div>
               )}

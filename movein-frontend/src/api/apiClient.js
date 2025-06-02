@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Use environment variable if available, otherwise default to the backend port (3000)
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api';
+// Use environment variable if available, otherwise default to the local network IP
+const API_URL = process.env.REACT_APP_API_URL || 'http://172.20.10.9:3000/api';
 
 // Log the API URL for debugging
 console.log('API URL:', API_URL);

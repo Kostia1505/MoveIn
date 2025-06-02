@@ -7,15 +7,14 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-theme-secondary border-t border-theme py-12">
+    <footer className="bg-theme-secondary border-t border-theme py-8 md:py-12">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand Section */}
-          <div className="col-span-1">
-            <h3 className="text-xl font-bold mb-4 text-theme-primary">MoveIN</h3>
-            <p className="text-theme-secondary mb-4">
-              Luxurious beachfront apartments and hotel rooms with stunning sea views,
-              offering the perfect blend of comfort and elegance for your dream vacation.
+          <div className="col-span-1 sm:col-span-2 md:col-span-1">
+            <h3 className="text-xl font-bold mb-3 md:mb-4 text-theme-primary">MoveIN</h3>
+            <p className="text-theme-secondary mb-3 md:mb-4 text-sm md:text-base">
+              Service for the sale, lease and purchase of real estate. We help you find your perfect home or investment property.
             </p>
             <div className="flex space-x-4">
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" 
@@ -41,8 +40,8 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div className="col-span-1">
-            <h3 className="text-xl font-bold mb-4 text-theme-primary">Quick Links</h3>
-            <ul className="space-y-2">
+            <h3 className="text-xl font-bold mb-3 md:mb-4 text-theme-primary">Quick Links</h3>
+            <ul className="space-y-2 text-sm md:text-base">
               <li><Link to="/" className="text-theme-secondary hover:text-accent transition-colors">Home</Link></li>
               <li><Link to="/properties" className="text-theme-secondary hover:text-accent transition-colors">Properties</Link></li>
               <li><Link to="/buy" className="text-theme-secondary hover:text-accent transition-colors">Buy</Link></li>
@@ -54,16 +53,16 @@ const Footer = () => {
 
           {/* Contact */}
           <div className="col-span-1">
-            <h3 className="text-xl font-bold mb-4 text-theme-primary">Contact</h3>
-            <ul className="space-y-3">
+            <h3 className="text-xl font-bold mb-3 md:mb-4 text-theme-primary">Contact</h3>
+            <ul className="space-y-3 text-sm md:text-base">
               <li className="flex items-start">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-accent mr-2 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                 </svg>
                 <div className="text-theme-secondary">
-                  123 Seaside Boulevard<br />
-                  Costa Bella, 12345<br />
-                  Italy
+                  S. Bandera, 12 st<br />
+                  Lviv, 79000<br />
+                  Ukraine
                 </div>
               </li>
               <li className="flex items-center">
@@ -83,18 +82,18 @@ const Footer = () => {
           </div>
 
           {/* Newsletter */}
-          <div className="col-span-1">
-            <h3 className="text-xl font-bold mb-4 text-theme-primary">Newsletter</h3>
-            <p className="text-theme-secondary mb-4">Subscribe to our newsletter for special deals and updates.</p>
+          <div className="col-span-1 sm:col-span-2 md:col-span-1">
+            <h3 className="text-xl font-bold mb-3 md:mb-4 text-theme-primary">Newsletter</h3>
+            <p className="text-theme-secondary mb-3 md:mb-4 text-sm md:text-base">Subscribe to our newsletter for special deals and updates.</p>
             <form className="space-y-2">
               <input
                 type="email"
                 placeholder="Your email address"
-                className="w-full p-2 rounded-md bg-theme-input border border-theme text-theme-primary"
+                className="w-full p-3 rounded-md bg-theme-input border border-theme text-theme-primary text-sm md:text-base"
               />
               <button
                 type="submit"
-                className="w-full py-2 px-4 bg-accent hover:bg-accent-hover text-white font-medium rounded-md transition-colors"
+                className="w-full py-3 px-4 bg-accent hover:bg-accent-hover text-white font-medium rounded-md transition-colors text-sm md:text-base"
               >
                 Subscribe
               </button>
@@ -103,8 +102,8 @@ const Footer = () => {
         </div>
 
         {/* Copyright */}
-        <div className="mt-12 pt-6 border-t border-theme text-center">
-          <p className="text-theme-muted">© {currentYear} MoveIN. All rights reserved.</p>
+        <div className="mt-8 md:mt-12 pt-4 md:pt-6 border-t border-theme text-center">
+          <p className="text-theme-muted text-sm">© {currentYear} MoveIN. All rights reserved.</p>
         </div>
       </div>
     </footer>

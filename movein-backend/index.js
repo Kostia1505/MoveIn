@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 3000;
 
 // Configure CORS to allow requests from frontend
 app.use(cors({
-  origin: ['http://localhost:5000', 'http://localhost:3000', 'http://localhost:3001'],
+  origin: ['http://localhost:5000', 'http://localhost:3000', 'http://localhost:3001', 'http://172.20.10.9:3000', 'http://172.20.10.9:3001', 'http://172.20.10.9:*'],
   credentials: true
 }));
 app.use(express.json());
